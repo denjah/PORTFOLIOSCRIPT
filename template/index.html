@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1440">
+    <title>Портфолио - Карточки товара</title>
+    <link rel="icon" type="image/png" href="../assets/icons/PNG_BLACK/ICON_BLACK_01.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Панель управления форматом карточек -->
+    <div class="format-control">
+        <span class="format-control__label">Формат карточек:</span>
+        <button class="format-control__btn format-control__btn--active" onclick="handleFormatChange('portrait')" id="btn-portrait">
+            3:4 Portrait
+        </button>
+        <button class="format-control__btn" onclick="handleFormatChange('square')" id="btn-square">
+            1:1 Square
+        </button>
+        <button class="format-control__btn format-control__btn--add" onclick="handleAddGroup()" id="btn-add-group" title="Добавить новую группу">
+            + Добавить группу
+        </button>
+        <button class="format-control__btn" onclick="openCardSettings()" title="Настройки карточек">⚙️ Карточки</button>
+        <button class="format-control__btn" onclick="openBackgroundSettings()" title="Настройки фона">🖼️ Фон</button>
+        <button class="format-control__btn" onclick="openProcessImageSelector()" title="Выбрать изображение процесса">🖼️ Процесс</button>
+        <button class="format-control__btn" onclick="randomizeIcons('position')" title="Рандомизировать иконки по расположению">🎲 Иконки (позиция)</button>
+        <button class="format-control__btn" onclick="randomizeIcons('filename')" title="Рандомизировать иконки по именам">🎲 Иконки (имена)</button>
+        <a href="../console.html" class="format-control__btn" title="Консоль проектов">📁 Консоль</a>
+    </div>
+    
+    <!-- Кнопки редактирования рамки и тени (непечатаемые, справа сверху) -->
+    <div class="card-editor-controls no-print">
+        <button class="card-editor-btn" onclick="openQuickCardEditor()" title="Редактировать рамку и тень">⚙️</button>
+    </div>
+
+    <!-- Контейнер для скроллируемого фона -->
+    <div class="background-container" id="background-container"></div>
+
+    <!-- Раздел 1: Вступление и приветствие -->
+    <section class="section section--intro" id="section-intro">
+        <div class="section__container">
+            <div class="intro__content">
+                <h1 class="intro__title">Карточки товара</h1>
+                <p class="intro__text" contenteditable="true">
+                    Представляю вашему вниманию серию карточек товара, разработанную для электро-коробов BT-AT и BT-AG. 
+                    Этот проект охватил полный цикл создания маркетинговых материалов – от профессиональной фотосъемки 
+                    до финальной верстки и подготовки файлов для различных каналов.
+                </p>
+            </div>
+            
+            <!-- Декоративные иконки (генерируются автоматически) -->
+            <div class="decorative-icons"></div>
+            
+            <!-- Главные фото (featured cards) -->
+            <div class="intro__overview">
+                <!-- Featured cards будут добавлены через JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Раздел 2: Процесс работы -->
+    <section class="section section--process" id="section-process">
+        <div class="section__container">
+            <h2 class="section__title">Процесс работы</h2>
+            
+            <div class="process-flow__image">
+                <img id="process-image" src="" alt="Process" class="process-flow__img">
+            </div>
+            
+            <div class="process-flow">
+                <div class="process-flow__container">
+                    <article class="process-block process-block--step-1">
+                        <div class="process-block__number">1</div>
+                        <h3 class="process-block__title">Фотография и обработка</h3>
+                        <p class="process-block__text" contenteditable="true">
+                            Предметная фотосъемка продукции с акцентом на детали и текстуру, последующая профессиональная 
+                            ретушь, обтравка и цветокоррекция для создания привлекательных и реалистичных изображений.
+                        </p>
+                    </article>
+                    <div class="process-flow__arrow">→</div>
+                    <article class="process-block process-block--step-2">
+                        <div class="process-block__number">2</div>
+                        <h3 class="process-block__title">Контент и тексты</h3>
+                        <p class="process-block__text" contenteditable="true">
+                            Сбор и анализ информации о продукте, разработка информативного и лаконичного текста 
+                            с акцентом на ключевых преимуществах и характеристиках товара.
+                        </p>
+                    </article>
+                    <div class="process-flow__arrow">→</div>
+                    <article class="process-block process-block--step-3">
+                        <div class="process-block__number">3</div>
+                        <h3 class="process-block__title">Концепция и дизайн</h3>
+                        <p class="process-block__text" contenteditable="true">
+                            Создание концепции дизайна карточек, разработка макета с учетом визуальной иерархии 
+                            и фирменного стиля бренда.
+                        </p>
+                    </article>
+                </div>
+            </div>
+            
+            <!-- Декоративные иконки (генерируются автоматически) -->
+            <div class="decorative-icons"></div>
+        </div>
+    </section>
+
+    <!-- Раздел 3: Галерея карточек товара -->
+    <section class="section section--gallery" id="section-gallery">
+        <div class="section__container">
+            <h2 class="section__title">Карточки товара</h2>
+            
+            <!-- Группы карточек (генерируются автоматически или вручную) -->
+            <div id="gallery-groups-container">
+                <!-- Группы будут добавлены через JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Модальное окно для редактирования группы -->
+    <div class="modal" id="edit-group-modal">
+        <div class="modal__overlay" onclick="closeEditGroupModal()"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 class="modal__title">Редактировать группу</h3>
+                <button class="modal__close" onclick="closeEditGroupModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="edit-group-preview-container">
+                    <div class="edit-group-preview">
+                        <label class="form-label">Предпросмотр группы (25%):</label>
+                        <div id="edit-group-preview" class="edit-group-preview__area">
+                            <!-- Предпросмотр группы будет добавлен через JS -->
+                        </div>
+                    </div>
+                    <div class="edit-group-controls">
+                        <div class="form-group">
+                            <label class="form-label">Текущие карточки в группе:</label>
+                            <div id="edit-group-cards-list" class="edit-cards-list">
+                                <!-- Список карточек будет добавлен через JS -->
+                            </div>
+                            <button class="btn btn--secondary" onclick="addEmptyBlockToGroup()" style="margin-top: 10px;">+ Добавить пустой блок</button>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Добавить файлы (по одному на строку):</label>
+                            <textarea class="form-textarea" id="edit-group-files-list" 
+                                      placeholder="z:\!_STUFF\ALTAIR\КАРТОЧКИ\КОННЕКТОР_910000101\1200x1200\КОННЕКТОР_910000101_.png"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--danger" onclick="handleDeleteGroup()" id="btn-delete-group">Удалить группу</button>
+                <button class="btn btn--secondary" onclick="closeEditGroupModal()">Отмена</button>
+                <button class="btn btn--primary" onclick="confirmEditGroup()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для добавления группы -->
+    <div class="modal" id="add-group-modal">
+        <div class="modal__overlay" onclick="closeAddGroupModal()"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 class="modal__title">Добавить новую группу</h3>
+                <button class="modal__close" onclick="closeAddGroupModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="form-group">
+                    <label class="form-label">Формат карточек в группе:</label>
+                    <div class="form-radio-group">
+                        <label class="form-radio">
+                            <input type="radio" name="group-format" value="portrait" checked>
+                            <span>3:4 Portrait</span>
+                        </label>
+                        <label class="form-radio">
+                            <input type="radio" name="group-format" value="square">
+                            <span>1:1 Square</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Путь к папке с карточками:</label>
+                    <input type="text" class="form-input" id="group-folder-path" 
+                           placeholder="z:\!_STUFF\ALTAIR\КАРТОЧКИ\КОННЕКТОР_910000101">
+                    <small class="form-hint">Укажите полный путь к папке или оставьте пустым для ручного ввода файлов</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Или укажите файлы вручную (по одному на строку):</label>
+                    <textarea class="form-textarea" id="group-files-list" 
+                              placeholder="z:\!_STUFF\ALTAIR\КАРТОЧКИ\КОННЕКТОР_910000101\1200x1200\КОННЕКТОР_910000101_.png&#10;z:\!_STUFF\ALTAIR\КАРТОЧКИ\КОННЕКТОР_910000101\1200x1200\КОННЕКТОР_910000101_2.png"></textarea>
+                    <small class="form-hint">Каждый файл с новой строки. Полные пути к файлам.</small>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeAddGroupModal()">Отмена</button>
+                <button class="btn btn--primary" onclick="confirmAddGroup()">Добавить группу</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Раздел 4: Подвал -->
+    <section class="section section--footer" id="section-footer">
+        <div class="section__container">
+            <h2 class="section__title">Результат</h2>
+            
+            <!-- Скриншот маркетплейса с карточками -->
+            <div class="marketplace-container">
+                <figure class="marketplace-screenshot">
+                    <img src="../SHABLON_BEHANCE_1440/OZON_PAGE/OZON IMAGE.jpg" alt="Ozon Marketplace" class="marketplace-screenshot__img" id="ozon-screenshot">
+                </figure>
+                <div class="marketplace-cards-overlay" id="marketplace-cards-overlay">
+                    <!-- Карточки будут размещены поверх скриншота -->
+                </div>
+            </div>
+            
+            <!-- Контактная информация -->
+            <div class="contacts">
+                <h3 class="contacts__title">Контакты</h3>
+                <div class="contacts__info" contenteditable="true">
+                    <p>Email: your.email@example.com</p>
+                    <p>Behance: behance.net/yourprofile</p>
+                    <p>Telegram: @yourhandle</p>
+                </div>
+            </div>
+            
+            <!-- Декоративные иконки (генерируются автоматически) -->
+            <div class="decorative-icons"></div>
+        </div>
+    </section>
+
+    <!-- Модальное окно настроек карточек -->
+    <div class="modal" id="card-settings-modal">
+        <div class="modal__overlay" onclick="closeCardSettings()"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 class="modal__title">Настройки карточек</h3>
+                <button class="modal__close" onclick="closeCardSettings()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="form-group">
+                    <label class="form-label">Толщина рамки:</label>
+                    <div class="form-radio-group">
+                        <label class="form-radio">
+                            <input type="radio" name="border-width" value="0">
+                            <span>0px</span>
+                        </label>
+                        <label class="form-radio">
+                            <input type="radio" name="border-width" value="1">
+                            <span>1px</span>
+                        </label>
+                        <label class="form-radio">
+                            <input type="radio" name="border-width" value="2" checked>
+                            <span>2px</span>
+                        </label>
+                        <label class="form-radio">
+                            <input type="radio" name="border-width" value="3">
+                            <span>3px</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Цвет рамки:</label>
+                    <input type="color" class="form-input" id="card-border-color" value="#cccccc" style="width: 100px; height: 40px; margin-bottom: 10px;">
+                    <div class="form-radio-group">
+                        <label class="form-radio">
+                            <input type="radio" name="border-color-preset" value="#000000">
+                            <span>Черный</span>
+                        </label>
+                        <label class="form-radio">
+                            <input type="radio" name="border-color-preset" value="#ffffff">
+                            <span>Белый</span>
+                        </label>
+                        <label class="form-radio">
+                            <input type="radio" name="border-color-preset" value="#cccccc">
+                            <span>Серый</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Тень:</label>
+                    <label class="form-checkbox">
+                        <input type="checkbox" id="card-shadow-enabled" checked>
+                        <span>Включить тень</span>
+                    </label>
+                    <div class="form-radio-group" style="margin-top: 10px;">
+                        <label class="form-radio">
+                            <input type="radio" name="shadow-preset" value="weak">
+                            <span>Слабая</span>
+                        </label>
+                        <label class="form-radio">
+                            <input type="radio" name="shadow-preset" value="medium" checked>
+                            <span>Средняя</span>
+                        </label>
+                        <label class="form-radio">
+                            <input type="radio" name="shadow-preset" value="strong">
+                            <span>Сильная</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeCardSettings()">Отмена</button>
+                <button class="btn btn--primary" onclick="saveCardSettings()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно выбора изображения процесса -->
+    <div class="modal" id="process-image-modal">
+        <div class="modal__overlay" onclick="closeProcessImageSelector()"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 class="modal__title">Выбрать изображение процесса</h3>
+                <button class="modal__close" onclick="closeProcessImageSelector()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="form-group">
+                    <label class="form-label">Доступные изображения:</label>
+                    <div id="process-images-list" class="process-images-list">
+                        <!-- Список изображений будет добавлен через JS -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeProcessImageSelector()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно настроек фона -->
+    <div class="modal" id="background-settings-modal">
+        <div class="modal__overlay" onclick="closeBackgroundSettings()"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 class="modal__title">Настройки фона</h3>
+                <button class="modal__close" onclick="closeBackgroundSettings()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="form-group">
+                    <label class="form-label">Тип фона:</label>
+                    <div class="form-radio-group">
+                        <label class="form-radio">
+                            <input type="radio" name="bg-type" value="image" checked onchange="toggleBackgroundTypeControls()">
+                            <span>Изображение</span>
+                        </label>
+                        <label class="form-radio">
+                            <input type="radio" name="bg-type" value="color" onchange="toggleBackgroundTypeControls()">
+                            <span>Цвет</span>
+                        </label>
+                        <label class="form-radio">
+                            <input type="radio" name="bg-type" value="gradient" onchange="toggleBackgroundTypeControls()">
+                            <span>Градиент</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group" id="bg-image-controls">
+                    <button class="btn btn--secondary" onclick="randomizeBackground()">🎲 Рандомайзер</button>
+                    <input type="file" id="bg-file-input" accept="image/*" style="display: none;" onchange="handleBackgroundFileSelect(event)">
+                    <button class="btn btn--secondary" onclick="document.getElementById('bg-file-input').click()">Загрузить новый</button>
+                </div>
+                <div class="form-group" id="bg-color-controls" style="display: none;">
+                    <label class="form-label">Цвет:</label>
+                    <input type="color" class="form-input" id="bg-color" value="#000000">
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeBackgroundSettings()">Отмена</button>
+                <button class="btn btn--primary" onclick="saveBackgroundSettings()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1440">
+    <title>Консоль управления проектами портфолио</title>
+    <link rel="stylesheet" href="template/styles.css">
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            padding: 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .console-header {
+            margin-bottom: 60px;
+            text-align: center;
+        }
+        
+        .console-header h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+        
+        .console-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+        
+        .btn-console {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-console:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn-console--primary {
+            background: rgba(0, 150, 255, 0.3);
+            border-color: rgba(0, 150, 255, 0.5);
+        }
+        
+        .btn-console--primary:hover {
+            background: rgba(0, 150, 255, 0.5);
+            border-color: rgba(0, 150, 255, 0.7);
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .project-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px);
+        }
+        
+        .project-card__title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .project-card__meta {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+        }
+        
+        .project-card__actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .project-card__btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s;
+        }
+        
+        .project-card__btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .project-card__btn--danger {
+            background: rgba(255, 68, 68, 0.2);
+            border-color: rgba(255, 68, 68, 0.3);
+        }
+        
+        .project-card__btn--danger:hover {
+            background: rgba(255, 68, 68, 0.3);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .empty-state__icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state__text {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="console-header">
+        <h1>Консоль управления проектами</h1>
+        <p style="color: rgba(255,255,255,0.6); font-size: 18px;">Управление всеми проектами портфолио</p>
+    </div>
+    
+    <div class="console-actions">
+        <a href="template/index.html?project=new" class="btn-console btn-console--primary">+ Создать новый проект</a>
+        <button class="btn-console" onclick="exportAllProjects()">Экспортировать все проекты</button>
+        <button class="btn-console" onclick="refreshProjects()">Обновить список</button>
+    </div>
+    
+    <div id="projects-container" class="projects-grid">
+        <!-- Проекты загружаются через JS -->
+    </div>
+    
+    <script>
+        // Загрузка списка проектов из localStorage
+        const loadProjects = () => {
+            const projectsContainer = document.getElementById('projects-container');
+            const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
+            
+            if (projects.length === 0) {
+                projectsContainer.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <div class="empty-state__icon">📁</div>
+                        <div class="empty-state__text">Нет сохраненных проектов</div>
+                        <a href="template/index.html?project=new" class="btn-console btn-console--primary">Создать первый проект</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            projectsContainer.innerHTML = projects.map((project, index) => {
+                const lastModified = project.lastModified ? new Date(project.lastModified).toLocaleDateString('ru-RU') : 'Неизвестно';
+                const groupsCount = project.groups ? project.groups.length : 0;
+                const groupNames = project.groups ? project.groups.map(g => g.name || `Группа ${g.id}`).join(', ') : '';
+                const bgImage = project.backgroundSettings && project.backgroundSettings.imagePath 
+                    ? project.backgroundSettings.imagePath 
+                    : (project.backgroundSettings && project.backgroundSettings.type === 'color' 
+                        ? `linear-gradient(180deg, ${project.backgroundSettings.color} 0%, ${project.backgroundSettings.color} 100%)`
+                        : 'linear-gradient(180deg, #000000 0%, #1a1a1a 100%)');
+                
+                return `
+                    <div class="project-card" onclick="openProject('${project.id}')" style="background-image: url('${bgImage}'); background-size: cover; background-position: center;">
+                        <div style="background: rgba(0,0,0,0.7); padding: 20px; border-radius: 12px;">
+                            <div class="project-card__title">${project.name || `Проект ${index + 1}`}</div>
+                            <div class="project-card__meta">
+                                Групп: ${groupsCount} | Обновлен: ${lastModified}
+                            </div>
+                            ${groupNames ? `<div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 10px; line-height: 1.4;">${groupNames}</div>` : ''}
+                            <div class="project-card__actions" onclick="event.stopPropagation()">
+                                <button class="project-card__btn" onclick="openProject('${project.id}')">Открыть</button>
+                                <button class="project-card__btn" onclick="renameProject('${project.id}')">Переименовать</button>
+                                <button class="project-card__btn" onclick="duplicateProject('${project.id}')">Копировать</button>
+                                <button class="project-card__btn project-card__btn--danger" onclick="deleteProject('${project.id}')">Удалить</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+        
+        const openProject = (projectId) => {
+            window.location.href = `template/index.html?project=${projectId}`;
+        };
+        
+        const duplicateProject = (projectId) => {
+            const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+            
+            const newProject = {
+                ...project,
+                id: 'project-' + Date.now(),
+                name: project.name + ' (копия)',
+                lastModified: new Date().toISOString()
+            };
+            
+            projects.push(newProject);
+            localStorage.setItem('portfolioProjects', JSON.stringify(projects));
+            loadProjects();
+        };
+        
+        const deleteProject = (projectId) => {
+            if (!confirm('Удалить этот проект?')) return;
+            
+            const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
+            const filtered = projects.filter(p => p.id !== projectId);
+            localStorage.setItem('portfolioProjects', JSON.stringify(filtered));
+            loadProjects();
+        };
+        
+        const renameProject = (projectId) => {
+            const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+            
+            const newName = prompt('Введите новое название проекта:', project.name || `Проект ${projectId}`);
+            if (newName && newName.trim()) {
+                project.name = newName.trim();
+                project.lastModified = new Date().toISOString();
+                localStorage.setItem('portfolioProjects', JSON.stringify(projects));
+                loadProjects();
+            }
+        };
+        
+        const exportAllProjects = () => {
+            const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
+            const dataStr = JSON.stringify(projects, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'portfolio-projects-backup.json';
+            link.click();
+        };
+        
+        const refreshProjects = () => {
+            loadProjects();
+        };
+        
+        // Загружаем проекты при загрузке страницы
+        loadProjects();
+    </script>
+</body>
+</html>

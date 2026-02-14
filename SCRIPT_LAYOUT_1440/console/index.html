@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=2560, height=1080">
+    <title>Portfolio Layout Builder</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="bg-texture" class="bg-texture" aria-hidden="true"></div>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-left">
+                <h1>📐 Portfolio Layout Builder</h1>
+                <div class="theme-toggle">
+                    <button type="button" class="theme-btn" id="themeLightBtn" onclick="toggleTheme('light')"
+                        title="Светлая тема">☀️</button>
+                    <button type="button" class="theme-btn" id="themeDarkBtn" onclick="toggleTheme('dark')"
+                        title="Тёмная тема">🌙</button>
+                </div>
+                <!-- Layout Selector -->
+                <div class="layout-selector-header">
+                    <div class="radio-group radio-group-pills">
+                        <label class="pill-label"><input type="radio" name="layout" value="0"
+                                checked><span>1</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="1"><span>2</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="2"><span>3</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="3"><span>4</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="4"><span>4S</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="5"><span>3S</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="6"><span>8K</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="7"><span>9K</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="8"><span>10K</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="9"><span>41K</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="10"><span>ISO1</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="11"><span>ISO2</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="12"><span>ISO3</span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="btn btn-accent btn-sm" id="exportPngBtn" disabled>
+                    <span class="btn-icon">📷</span> PNG
+                </button>
+                <button class="btn btn-accent btn-sm" id="exportAllBtn" disabled>
+                    <span class="btn-icon">📦</span> PNG All
+                </button>
+                <button class="btn btn-accent btn-sm" id="exportCurrentHtmlBtn" disabled>
+                    <span class="btn-icon">🌐</span> HTML
+                </button>
+                <button class="btn btn-primary btn-sm" id="buildBtn" disabled>
+                    <span class="btn-icon">⚡</span> HTML All
+                </button>
+            </div>
+        </header>
+
+        <main class="main-row">
+            <aside class="sidebar">
+                <!-- Upload & Project -->
+                <section class="panel" id="uploadSection">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Проект</h3>
+                        <div class="panel-actions">
+                            <button type="button" class="btn btn-ghost btn-xs" id="saveProjectBtn">💾 Сохранить</button>
+                            <button type="button" class="btn btn-ghost btn-xs" id="loadProjectBtn">📂 Загрузить</button>
+                        </div>
+                    </div>
+                    <div class="upload-zone" id="uploadZone">
+                        <span class="upload-icon">📁</span>
+                        <span class="upload-label">Перетащите изображения или нажмите для выбора</span>
+                        <input type="file" id="fileInput" multiple accept="image/*">
+                    </div>
+                </section>
+
+                <!-- Cards -->
+                <section class="panel cards-panel" id="cardsSection">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Карточки</h3>
+                        <button type="button" class="btn btn-ghost btn-xs" id="clearCardsBtn">🗑️ Очистить</button>
+                    </div>
+                    <div class="cards-list" id="cardsList"></div>
+                </section>
+
+                <!-- Layout Settings -->
+                <section class="panel settings-panel">
+                    <h3 class="panel-title">Настройки</h3>
+
+                    <!-- Aspect ratio -->
+                    <div class="setting-group sg-aspect">
+                        <label class="label">Пропорция</label>
+                        <div class="radio-group radio-group-pills">
+                            <label class="pill-label"><input type="radio" name="aspect" value="1"
+                                    checked><span>1:1</span></label>
+                            <label class="pill-label"><input type="radio" name="aspect"
+                                    value="0.75"><span>3:4</span></label>
+                        </div>
+                    </div>
+
+                    <!-- Background -->
+                    <div class="setting-group sg-bg">
+                        <label class="label">Обычный фон</label>
+                        <div class="bg-controls">
+                            <div class="radio-group radio-group-pills">
+                                <label class="pill-label"><input type="radio" name="bg" value="random"
+                                        checked><span>Случайный</span></label>
+                                <button type="button" class="btn btn-outline btn-xs" id="customBgBtn">Свой</button>
+                            </div>
+                            <select id="bgHistorySelect" class="select select-sm">
+                                <option value="">История фонов</option>
+                            </select>
+                            <button type="button" class="btn btn-ghost btn-xs" id="bgRandomizeBtn"
+                                title="Рандом по вертикали">🎲</button>
+                            <input type="file" id="bgInput" accept="image/*" class="sr-only">
+                        </div>
+                    </div>
+
+                    <!-- ISO Background -->
+                    <div class="setting-group sg-iso-bg">
+                        <label class="label">ISO фон</label>
+                        <div class="bg-controls">
+                            <div class="radio-group radio-group-pills">
+                                <label class="pill-label"><input type="radio" name="isobg" value="gradient"
+                                        checked><span>Градиент</span></label>
+                                <button type="button" class="btn btn-outline btn-xs" id="isoBgBtn">Свой</button>
+                            </div>
+                            <select id="isoBgHistorySelect" class="select select-sm">
+                                <option value="">История ISO фонов</option>
+                            </select>
+                            <div class="blur-control">
+                                <label class="label-inline">Lens Blur</label>
+                                <input type="range" id="isoBgBlurRange" min="0" max="40" value="20" class="range-sm">
+                                <span id="isoBgBlurValue" class="range-value">20</span>
+                            </div>
+                            <input type="file" id="isoBgInput" accept="image/*" class="sr-only">
+                        </div>
+                    </div>
+
+                    <!-- Frame -->
+                    <div class="setting-group setting-row sg-frame">
+                        <label class="label">Рамка</label>
+                        <div class="radio-group radio-group-pills">
+                            <label class="pill-label"><input type="radio" name="frame" value="white"
+                                    checked><span>Белая</span></label>
+                            <label class="pill-label"><input type="radio" name="frame"
+                                    value="black"><span>Чёрная</span></label>
+                        </div>
+                        <label class="small-label">Размер</label>
+                        <input type="number" id="frameSizeInput" class="input input-num" value="2" min="1" max="8"
+                            step="1">
+                    </div>
+
+                    <!-- Shadow -->
+                    <div class="setting-group sg-shadow">
+                        <label class="label">Тени</label>
+                        <div class="radio-group radio-group-pills">
+                            <label class="pill-label"><input type="radio" name="shadow" value="1"><span>1</span></label>
+                            <label class="pill-label"><input type="radio" name="shadow" value="2"><span>2</span></label>
+                            <label class="pill-label"><input type="radio" name="shadow" value="3"
+                                    checked><span>3</span></label>
+                            <label class="pill-label"><input type="radio" name="shadow" value="4"><span>4</span></label>
+                            <label class="pill-label"><input type="radio" name="shadow" value="5"><span>5</span></label>
+                            <label class="pill-label"><input type="radio" name="shadow" value="6"><span>6</span></label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Intro -->
+                <section class="panel">
+                    <div class="setting-group sg-intro">
+                        <div class="setting-group-header">
+                            <label class="label">Вступление</label>
+                            <label class="toggle-wrap"><input type="checkbox" id="introEnabledToggle"
+                                    class="module-toggle"> <span class="toggle-label">вкл</span></label>
+                        </div>
+                        <div class="intro-controls">
+                            <input type="text" id="introTitleInput" class="input" placeholder="Заголовок вступления">
+                            <textarea id="introTextInput" class="textarea" placeholder="Текст вступления"
+                                rows="3"></textarea>
+                            <div class="font-row">
+                                <label class="small-label">Шрифт</label>
+                                <select id="introFontSelect" class="select">
+                                    <option value="'Helvetica Neue', Arial, sans-serif">Helvetica Neue</option>
+                                    <option value="Georgia, serif">Georgia</option>
+                                    <option value="'Segoe UI', sans-serif">Segoe UI</option>
+                                    <option value="'Open Sans', sans-serif">Open Sans</option>
+                                </select>
+                                <label class="small-label">Размер</label>
+                                <input type="number" id="introFontSizeInput" class="input input-num" value="48" min="12"
+                                    max="96">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Process -->
+                <section class="panel">
+                    <div class="setting-group process-group sg-process">
+                        <div class="setting-group-header">
+                            <label class="label">Процесс работы</label>
+                            <label class="toggle-wrap"><input type="checkbox" id="processEnabledToggle"
+                                    class="module-toggle"> <span class="toggle-label">вкл</span></label>
+                        </div>
+                        <input type="text" id="processSectionTitleInput" class="input" placeholder="Заголовок секции">
+                        <div class="process-steps">
+                            <div class="process-step">
+                                <input type="text" id="processStep1TitleInput" class="input input-sm"
+                                    placeholder="Шаг 1 заголовок">
+                                <textarea id="processStep1TextInput" class="textarea textarea-sm" rows="2"
+                                    placeholder="Шаг 1 текст"></textarea>
+                            </div>
+                            <div class="process-step">
+                                <input type="text" id="processStep2TitleInput" class="input input-sm"
+                                    placeholder="Шаг 2 заголовок">
+                                <textarea id="processStep2TextInput" class="textarea textarea-sm" rows="2"
+                                    placeholder="Шаг 2 текст"></textarea>
+                            </div>
+                            <div class="process-step">
+                                <input type="text" id="processStep3TitleInput" class="input input-sm"
+                                    placeholder="Шаг 3 заголовок">
+                                <textarea id="processStep3TextInput" class="textarea textarea-sm" rows="2"
+                                    placeholder="Шаг 3 текст"></textarea>
+                            </div>
+                        </div>
+                        <div class="font-row">
+                            <label class="small-label">Шрифт</label>
+                            <select id="processFontSelect" class="select">
+                                <option value="'Helvetica Neue', Arial, sans-serif">Helvetica Neue</option>
+                                <option value="Georgia, serif">Georgia</option>
+                                <option value="'Segoe UI', sans-serif">Segoe UI</option>
+                            </select>
+                            <label class="small-label">Размер</label>
+                            <input type="number" id="processFontSizeInput" class="input input-num" value="18" min="10"
+                                max="32">
+                        </div>
+                        <div class="process-image-row">
+                            <label class="small-label">Изображение</label>
+                            <label class="btn btn-outline btn-xs">
+                                Выбрать
+                                <input type="file" id="processImageInput" accept="image/*" class="sr-only">
+                            </label>
+                            <span id="processImageName" class="hint"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Icons -->
+                <section class="panel">
+                    <div class="setting-group icons-group">
+                        <div class="setting-group-header">
+                            <label class="label">Иконки</label>
+                            <label class="toggle-wrap"><input type="checkbox" id="iconsEnabledToggle" checked
+                                    class="module-toggle"> <span class="toggle-label">вкл</span></label>
+                        </div>
+                        <div class="icon-options">
+                            <label class="small-label">Набор</label>
+                            <select id="iconThemeSelect" class="select">
+                                <option value="png_black">PNG_BLACK</option>
+                                <option value="svg_black">SVG_BLACK</option>
+                                <option value="svg_white">SVG_WHITE</option>
+                            </select>
+                            <label class="small-label">Рандом</label>
+                            <select id="iconRandomizeSelect" class="select">
+                                <option value="position">По расположению</option>
+                                <option value="filename">По имени</option>
+                            </select>
+                            <button type="button" class="btn btn-outline btn-xs" id="loadIconsBtn">Загрузить
+                                иконки</button>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+
+            <section class="preview-section">
+                <div class="canvas-container" id="canvasContainer">
+                    <canvas id="previewCanvas"></canvas>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

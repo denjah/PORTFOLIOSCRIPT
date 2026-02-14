@@ -1,0 +1,417 @@
+# -*- coding: utf-8 -*-
+"""
+SCRIPT_LAYOUT_1440 — сборка портфолио 1440px.
+Выбор карточек через Windows-диалог (Вид → Крупные значки для превью).
+Пропорция карточек: 1:1 или 3:4. Карточки с _+ в имени — всегда 2 колонки.
+Фоны и результат — в этой же папке (backgrounds/).
+"""
+from PIL import Image, ImageDraw, ImageFilter
+import os
+import sys
+import re
+import random
+import time
+
+import traceback
+import tkinter as tk
+from tkinter import filedialog, messagebox
+
+# Корень: папка скрипта
+ROOT = os.path.dirname(os.path.abspath(__file__))
+BG_PATH = os.path.join(ROOT, "backgrounds")
+os.makedirs(BG_PATH, exist_ok=True)
+
+log_path = os.path.join(ROOT, "portfolio_log.txt")
+log_file = open(log_path, "w", encoding="utf-8")
+
+def log(s):
+    print(s)
+    log_file.write(s + "\n")
+    log_file.flush()
+
+# --- Параметры макета ---
+CARD_FRAME = 2
+CANVAS_WIDTH = 1440
+MARGIN_LEFT_RIGHT = int(CANVAS_WIDTH * 0.083)
+COLUMN_GAP = int(CANVAS_WIDTH * 0.028)
+ROW_GAP = int(CANVAS_WIDTH * 0.028)
+COLUMNS = 4
+WORK_WIDTH = CANVAS_WIDTH - 2 * MARGIN_LEFT_RIGHT
+COLUMN_WIDTH = int((WORK_WIDTH - (COLUMNS - 1) * COLUMN_GAP) / COLUMNS)
+
+# CARD_ASPECT, SINGLE_HEIGHT, DOUBLE_WIDTH, DOUBLE_HEIGHT задаются после выбора пропорции
+
+LAYOUTS = [
+    [(0,0,2,2),(0,2,1,1),(0,3,2,2),(2,0,1,1),(3,0,1,1),(2,1,2,2),(2,3,1,1),(3,3,1,1),(2,4,1,1),(3,4,1,1)],
+    [(0,0,1,2),(1,0,1,1),(2,0,1,1),(3,0,1,1),(1,1,2,2),(0,2,1,1),(0,3,1,1),(3,1,1,2),(1,3,1,1),(3,3,1,1)],
+    [(0,0,2,2),(2,0,2,2),(0,2,1,1),(2,2,1,2),(0,3,2,2),(3,2,1,1),(0,5,1,1),(1,5,1,1),(2,5,1,1),(3,5,1,1)],
+    [(0,0,1,2),(1,0,1,1),(2,0,1,1),(3,0,1,1),(1,1,2,2),(0,2,1,1),(0,3,1,1),(3,1,1,2),(2,3,1,1),(3,3,1,1)],
+]
+
+def choose_aspect():
+    print("\nПропорция карточек:")
+    print("  1 — 1:1")
+    print("  2 — 3:4")
+    try:
+        s = input("Номер (1–2) [2]: ").strip() or "2"
+        return 1.0 if s == "1" else 3 / 4
+    except (ValueError, EOFError):
+        return 3 / 4
+
+def choose_layout():
+    print("\nПорядок вёрстки (1–4):")
+    print("  1 — слева большие блоки, справа мелкие и 2x2")
+    print("  2 — слева высокая колонка, справа верх 2+1, середина 2x2")
+    print("  3 — два больших сверху, снизу микс и ряд из 4")
+    print("  4 — как 2, нижние слоты в других позициях")
+    try:
+        s = input("Номер (1–4) [1]: ").strip() or "1"
+        n = int(s)
+        if 1 <= n <= 4:
+            return n - 1
+    except (ValueError, EOFError):
+        pass
+    return 0
+
+def choose_background():
+    """1 — выбрать файл, 2 — случайный из backgrounds. Возвращает путь или None (random)."""
+    print("\nФон:")
+    print("  1 — выбрать файл")
+    print("  2 — случайный из папки backgrounds")
+    try:
+        s = input("Номер (1–2) [2]: ").strip() or "2"
+        if s == "1":
+            path = pick_background_file()
+            if path:
+                return path
+            log("Файл не выбран — использую случайный из backgrounds.")
+        return None
+    except (ValueError, EOFError):
+        return None
+
+def _file_dialog_root():
+    r = tk.Tk()
+    r.withdraw()
+    r.attributes("-topmost", True)
+    return r
+
+_ftypes = [
+    ("Изображения", "*.png;*.jpg;*.jpeg;*.bmp;*.tiff;*.webp"),
+    ("PNG", "*.png"),
+    ("JPEG", "*.jpg;*.jpeg"),
+    ("Все файлы", "*.*"),
+]
+
+def pick_card_files():
+    root = _file_dialog_root()
+    paths = filedialog.askopenfilenames(
+        title="Выберите карточки для макета (Ctrl/Shift — несколько)",
+        initialdir=ROOT,
+        filetypes=_ftypes,
+    )
+    root.destroy()
+    return list(paths) if paths else []
+
+def pick_background_file():
+    """Выбор одного файла с фоном. Возвращает путь или None при отмене."""
+    root = _file_dialog_root()
+    path = filedialog.askopenfilename(
+        title="Выберите файл с фоном",
+        initialdir=BG_PATH,
+        filetypes=_ftypes,
+    )
+    root.destroy()
+    return path if path and os.path.isfile(path) else None
+
+def _msg_root():
+    r = tk.Tk()
+    r.withdraw()
+    r.attributes("-topmost", True)
+    return r
+
+def show_result(success, path=None, error_msg=None):
+    """Окно: успех (путь к файлу) или ошибка."""
+    root = _msg_root()
+    if success and path:
+        messagebox.showinfo("Готово", f"Файл создан:\n{path}")
+    elif success:
+        messagebox.showinfo("Готово", "Сборка выполнена.")
+    else:
+        msg = (error_msg or "Произошла ошибка.").strip()
+        if len(msg) > 800:
+            msg = msg[:800] + "\n\n… (полный текст в логе)"
+        messagebox.showerror("Ошибка", msg + "\n\nЛог: " + log_path)
+    root.destroy()
+
+def ask_run_again():
+    """Спросить: выполнить с другой вёрсткой? Возвращает True/False."""
+    root = _msg_root()
+    ok = messagebox.askyesno("Продолжить?", "Выполнить с другой вёрсткой?\n(Да — новый запуск, Нет — выход)")
+    root.destroy()
+    return bool(ok)
+
+def card_index(filename):
+    m = re.search(r"_0*(\d+)", os.path.basename(filename))
+    return int(m.group(1)) if m else 999
+
+def is_wide_card(filename):
+    return "_+" in os.path.basename(filename)
+
+def slot_to_rect(col, row, w_cols, h_rows, single_height):
+    """Слот в пиксели. Высота строк единая (single_height), пропорция задаёт размер 1x1."""
+    x = MARGIN_LEFT_RIGHT + col * (COLUMN_WIDTH + COLUMN_GAP)
+    y = MARGIN_LEFT_RIGHT + row * (single_height + ROW_GAP)
+    w = w_cols * COLUMN_WIDTH + (w_cols - 1) * COLUMN_GAP
+    h = h_rows * single_height + (h_rows - 1) * ROW_GAP
+    return (int(x), int(y), int(w), int(h))
+
+def layout_height_rows(layout):
+    max_row = 0
+    for (_, row, _, h_rows) in layout:
+        max_row = max(max_row, row + h_rows)
+    return max_row
+
+def _process_bg_image(bg, required_height):
+    """Масштаб по ширине 1440, crop/extend по высоте."""
+    bw, bh = bg.size
+    if bw != CANVAS_WIDTH:
+        ar = bh / bw
+        bg = bg.resize((CANVAS_WIDTH, int(CANVAS_WIDTH * ar)), Image.Resampling.LANCZOS)
+        bw, bh = bg.size
+    if bh < required_height:
+        flip = bg.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        out = Image.new("RGB", (CANVAS_WIDTH, required_height))
+        out.paste(bg, (0, 0))
+        y = bh
+        while y < required_height:
+            remain = required_height - y
+            if remain >= bh:
+                out.paste(flip, (0, y))
+                y += bh
+            else:
+                out.paste(flip.crop((0, 0, CANVAS_WIDTH, remain)), (0, y))
+                break
+        return out
+    return bg.crop((0, 0, CANVAS_WIDTH, required_height))
+
+def load_background(required_height, explicit_path=None):
+    """explicit_path: файл фона или None — случайный из backgrounds."""
+    fallback = Image.new("RGB", (CANVAS_WIDTH, required_height), (15, 18, 25))
+    if explicit_path:
+        try:
+            bg = Image.open(explicit_path).convert("RGB")
+            log(f"Фон: {os.path.basename(explicit_path)}")
+            return _process_bg_image(bg, required_height)
+        except Exception as e:
+            log(f"ERROR фона {explicit_path}: {e}")
+            return fallback
+    if not os.path.isdir(BG_PATH):
+        log("WARNING: Нет папки backgrounds, создаю простой фон.")
+        return fallback
+    exts = (".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".webp")
+    files = [f for f in os.listdir(BG_PATH) if f.lower().endswith(exts)]
+    if not files:
+        log("WARNING: Нет фонов в backgrounds, создаю простой фон.")
+        return fallback
+    random.seed(int(time.time() * 1000) + os.getpid())
+    fn = random.choice(files)
+    path = os.path.join(BG_PATH, fn)
+    log(f"Фон (random): {fn}")
+    try:
+        bg = Image.open(path).convert("RGB")
+        return _process_bg_image(bg, required_height)
+    except Exception as e:
+        log(f"ERROR фона: {e}")
+        return fallback
+
+def place(canvas, img, x, y, w, h, hero=False):
+    w, h = int(w), int(h)
+    x, y = int(x), int(y)
+    asp = img.width / img.height
+    if asp > w / h:
+        nw, nh = w, int(w / asp)
+    else:
+        nw, nh = int(h * asp), h
+    res = img.resize((nw, nh), Image.Resampling.LANCZOS)
+    ox = x + (w - nw) // 2
+    oy = y + (h - nh) // 2
+    pad = 20
+    cont = Image.new("RGBA", (w + pad * 2, h + pad * 2), (0, 0, 0, 0))
+    sh = Image.new("RGBA", (w + pad * 2, h + pad * 2), (0, 0, 0, 0))
+    sd = ImageDraw.Draw(sh)
+    sz = 15 if hero else 10
+    op = 100 if hero else 60
+    for i in range(sz):
+        a = int(op * (1 - i / sz))
+        sd.rectangle([pad + i, pad + i, w + pad - i, h + pad - i], (0, 0, 0, a))
+    sh = sh.filter(ImageFilter.GaussianBlur(sz))
+    cont.paste(sh, (0, 0), sh)
+    if hero:
+        gl = Image.new("RGBA", (w + pad * 2, h + pad * 2), (0, 0, 0, 0))
+        gd = ImageDraw.Draw(gl)
+        gd.rectangle([5, 5, w + pad * 2 - 5, h + pad * 2 - 5], outline=(100, 150, 200, 30), width=8)
+        gl = gl.filter(ImageFilter.GaussianBlur(8))
+        cont.paste(gl, (0, 0), gl)
+    bd = Image.new("RGBA", (w + pad * 2, h + pad * 2), (0, 0, 0, 0))
+    bdd = ImageDraw.Draw(bd)
+    bw = 3 if hero else 2
+    bc = (255, 255, 255, 200) if hero else (200, 200, 200, 150)
+    bdd.rectangle([pad, pad, w + pad, h + pad], outline=bc, width=bw)
+    cont.paste(bd, (0, 0), bd)
+    img_x1 = pad + (w - nw) // 2
+    img_y1 = pad + (h - nh) // 2
+    img_x2 = img_x1 + nw
+    img_y2 = img_y1 + nh
+    cl = Image.new("RGBA", (w + pad * 2, h + pad * 2), (0, 0, 0, 0))
+    cl.paste(res, (img_x1, img_y1))
+    cont = Image.alpha_composite(cont, cl)
+    frame_img = Image.new("RGBA", (w + pad * 2, h + pad * 2), (0, 0, 0, 0))
+    fd = ImageDraw.Draw(frame_img)
+    half = CARD_FRAME // 2
+    fd.rectangle([img_x1 + half, img_y1 + half, img_x2 - half, img_y2 - half],
+                 outline=(255, 255, 255, 255), width=CARD_FRAME)
+    cont = Image.alpha_composite(cont, frame_img)
+    canvas.paste(cont, (int(ox) - pad, int(oy) - pad), cont)
+
+def main():
+    try:
+        while True:
+            path, err = None, None
+            try:
+                path, err = _main()
+            except Exception as e:
+                err = traceback.format_exc()
+                log("EXCEPTION:\n" + err)
+            show_result(success=(path is not None and os.path.isfile(path)), path=path, error_msg=err)
+            if not ask_run_again():
+                break
+    finally:
+        log_file.close()
+
+def _main():
+    """Возвращает (path, error_msg): при успехе (out, None), иначе (None, '...')."""
+    log("\n--- новый запуск ---")
+    CARD_ASPECT = choose_aspect()
+    aspect_label = "1:1" if CARD_ASPECT == 1.0 else "3:4"
+    log(f"Пропорция карточек: {aspect_label}")
+
+    SINGLE_HEIGHT = int(COLUMN_WIDTH / CARD_ASPECT)
+    DOUBLE_WIDTH = COLUMN_WIDTH * 2 + COLUMN_GAP
+    DOUBLE_HEIGHT = int(DOUBLE_WIDTH / CARD_ASPECT)
+    log(f"Слот 1x1: {COLUMN_WIDTH}x{SINGLE_HEIGHT}px, 2x2: {DOUBLE_WIDTH}x{DOUBLE_HEIGHT}px")
+
+    lay_idx = choose_layout()
+    log(f"Вёрстка: {lay_idx + 1}")
+    layout = LAYOUTS[lay_idx]
+
+    bg_path = choose_background()
+
+    paths = pick_card_files()
+    if not paths:
+        log("Карточки не выбраны. Выход.")
+        return (None, "Карточки не выбраны. Выберите файлы в диалоге.")
+    log(f"Выбрано файлов: {len(paths)}")
+
+    # Сортируем по номеру _01, _02…
+    ordered = [(card_index(p), p, is_wide_card(p)) for p in paths]
+    ordered.sort(key=lambda x: (x[0], x[1]))
+    plus = [(idx, p) for idx, p, wide in ordered if wide]
+    normal = [(idx, p) for idx, p, wide in ordered if not wide]
+
+    wide_idx = [i for i, s in enumerate(layout) if s[2] >= 2]
+    narrow_idx = [i for i in range(10) if i not in wide_idx]
+    n_wide = len(wide_idx)
+    n_narrow = len(narrow_idx)
+
+    n_cards = len(ordered)
+    n_cycles = (n_cards + 9) // 10
+    n_wide_total = n_wide * n_cycles
+    n_narrow_total = n_narrow * n_cycles
+    if len(plus) > n_wide_total:
+        m = f"Карточек _+ ({len(plus)}) больше, чем слотов на 2 колонки ({n_wide_total}). Уменьшите число _+ или добавьте карточки."
+        log(f"ERROR: {m}")
+        return (None, m)
+    if len(normal) > n_narrow_total:
+        m = f"Обычных карточек ({len(normal)}) больше, чем узких слотов ({n_narrow_total})."
+        log(f"ERROR: {m}")
+        return (None, m)
+
+    cards_with_img = []
+    for (idx, p, _) in ordered:
+        try:
+            img = Image.open(p).convert("RGB")
+            name = os.path.basename(p)
+            wide = is_wide_card(p)
+            cards_with_img.append((idx, name, img, wide))
+        except Exception as e:
+            log(f"Пропуск {p}: {e}")
+    if not cards_with_img:
+        log("ERROR: ни одна карточка не загружена.")
+        return (None, "Ни одна карточка не загружена. Проверьте форматы файлов.")
+
+    plus_cards = [c for c in cards_with_img if c[3]]
+    normal_cards = [c for c in cards_with_img if not c[3]]
+    plus_list = list(plus_cards)
+    normal_list = list(normal_cards)
+
+    wide_slots = []
+    narrow_slots = []
+    for c in range(n_cycles):
+        for i in range(10):
+            g = c * 10 + i
+            if g >= n_cards:
+                break
+            if i in wide_idx:
+                wide_slots.append(g)
+            else:
+                narrow_slots.append(g)
+
+    slot_to_card = {}
+    for g in wide_slots:
+        card = plus_list.pop(0) if plus_list else normal_list.pop(0)
+        slot_to_card[g] = card
+    for g in narrow_slots:
+        slot_to_card[g] = normal_list.pop(0)
+
+    first_card = cards_with_img[0]
+    for g in slot_to_card:
+        card = slot_to_card[g]
+        slot_to_card[g] = (card, card[1] == first_card[1])
+
+    rows_per_cycle = layout_height_rows(layout)
+    content_h = MARGIN_LEFT_RIGHT
+
+    def rect(i):
+        s = layout[i % 10]
+        ro = (i // 10) * rows_per_cycle
+        return slot_to_rect(s[0], s[1] + ro, s[2], s[3], SINGLE_HEIGHT)
+
+    for i in range(n_cards):
+        _, y, _, h = rect(i)
+        content_h = max(content_h, y + h)
+    content_h += MARGIN_LEFT_RIGHT
+    final_h = int(content_h * 1.05)
+    log(f"Карточек: {n_cards}, циклов: {n_cycles}, высота: {final_h}px")
+
+    bg = load_background(final_h, explicit_path=bg_path)
+    log("\n=== Размещение ===")
+    for i in range(n_cards):
+        if i not in slot_to_card:
+            continue
+        card, hero = slot_to_card[i]
+        x, y, w, h = rect(i)
+        log(f"  {i+1}: {card[1]} -> {w}x{h} {'[HERO]' if hero else ''}")
+        place(bg, card[2], x, y, w, h, hero=hero)
+
+    out = os.path.join(ROOT, f"portfolio_1440x{final_h}.png")
+    try:
+        bg.save(out, "PNG", quality=95)
+        log("✓ Готово.")
+        return (out, None)
+    except Exception as e:
+        tb = traceback.format_exc()
+        log(f"ERROR сохранения: {e}\n{tb}")
+        return (None, f"Ошибка сохранения: {e}")
+
+if __name__ == "__main__":
+    main()
