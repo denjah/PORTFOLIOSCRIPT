@@ -1,5 +1,15 @@
 /* Portfolio Layout Builder — Premium Dark/Light UI */
 
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.row-center {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
 /* ===== Theme Variables ===== */
 :root,
 [data-theme="dark"] {
@@ -303,41 +313,93 @@ body {
 }
 
 /* ===== Main Layout ===== */
-.main-row {
-    flex: 1;
-    display: flex;
-    min-height: 0;
+.app-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr 340px;
+    /* Left, Center, Right */
+    height: calc(100vh - var(--header-h));
     overflow: hidden;
+    position: relative;
 }
 
-/* ===== Sidebar ===== */
-.sidebar {
-    flex: 0 0 400px;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+/* ===== Sidebars ===== */
+.sidebar-left,
+.sidebar-right {
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border);
     overflow-y: auto;
     overflow-x: hidden;
-    border-right: 1px solid var(--border);
-    background: var(--bg-surface);
-    transition: background 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    z-index: 10;
 }
 
+.sidebar-right {
+    border-left: 1px solid var(--border);
+    border-right: none;
+    background: var(--bg-surface-raised);
+}
+
+/* ===== Center Preview ===== */
+/* ===== Center Preview ===== */
+.preview-area {
+    position: relative;
+    overflow: auto;
+    display: flex;
+    /* Use align-items stretch or flex-start to allow scrolling logic to work better? */
+    /* Actually, to center a large item that might overflow, 
+       using margin: auto on the child is safer than justify-content: center on parent. */
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center;  <-- Removes this to avoid clipping top if overflow */
+    background: transparent;
+    padding: 20px;
+}
+
+.canvas-container {
+    margin: auto;
+    /* Centers it if smaller, allows scroll if larger */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    /* Optional: visual separation */
+    flex-shrink: 0;
+    /* Prevent shrinking */
+}
+
+canvas {
+    display: block;
+    /* Remove inline gap */
+    max-width: none;
+    /* Ensure it doesn't shrink if we want full size */
+}
+
+/* ===== Collapsible Panels ===== */
 .panel {
-    padding: 16px 18px;
     border-bottom: 1px solid var(--border-light);
-    transition: border-color 0.3s ease;
+    transition: all 0.2s ease;
+    padding: 16px 18px;
 }
 
 .panel:last-child {
     border-bottom: none;
 }
 
-.panel-header {
+.collapsible-panel .panel-header,
+.collapsible-group .group-header {
+    cursor: pointer;
+    user-select: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.panel-header {
     margin-bottom: 12px;
+}
+
+.collapsible-panel.collapsed .panel-header {
+    margin-bottom: 0;
 }
 
 .panel-actions {
@@ -351,6 +413,116 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-muted);
+}
+
+.collapsible-panel .panel-header:hover,
+.collapsible-group .group-header:hover {
+    background: var(--bg-surface-overlay);
+}
+
+.toggle-icon {
+    display: inline-block;
+    width: 16px;
+    text-align: center;
+    margin-right: 6px;
+    font-weight: bold;
+    color: var(--accent);
+}
+
+.panel-content,
+.group-content {
+    display: block;
+    padding-top: 4px;
+}
+
+.collapsible-panel.collapsed .panel-content,
+.collapsible-group.collapsed .group-content {
+    display: none !important;
+}
+
+.collapsible-panel.collapsed .toggle-icon::before {
+    content: "+";
+}
+
+.collapsible-panel:not(.collapsed) .toggle-icon::before {
+    content: "-";
+}
+
+.collapsible-panel .toggle-icon {
+    font-size: 0;
+}
+
+.collapsible-panel .toggle-icon::before {
+    font-size: 14px;
+}
+
+.collapsible-group.collapsed .toggle-icon::before {
+    content: "+";
+}
+
+.collapsible-group:not(.collapsed) .toggle-icon::before {
+    content: "-";
+}
+
+.collapsible-group .toggle-icon {
+    font-size: 0;
+}
+
+.collapsible-group .toggle-icon::before {
+    font-size: 14px;
+}
+
+/* ===== Group Headers (Internal) ===== */
+.group-header {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    padding: 8px 0;
+    border-bottom: 1px solid transparent;
+}
+
+.collapsible-group {
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.collapsible-group:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+/* ===== Cards List Specifics ===== */
+.cards-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    flex: 1;
+    min-height: 0;
+}
+
+.cards-panel.collapsed {
+    flex: 0 0 auto;
+}
+
+.cards-panel .panel-content {
+    flex: 1;
+    overflow-y: visible;
+    display: block;
+}
+
+#cardsList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    padding: 8px;
+    max-height: none;
+}
+
+/* Drop Zone text small adjustment */
+.bg-drop-zone .drop-text {
+    font-size: 10px;
 }
 
 /* ===== Settings ===== */
@@ -390,6 +562,37 @@ body {
     font-family: inherit;
 }
 
+.bg-drop-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-input);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    margin-top: 4px;
+}
+
+.bg-drop-zone:hover,
+.bg-drop-zone.dragover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.bg-drop-zone .drop-icon {
+    font-size: 14px;
+}
+
+.bg-drop-zone .drop-text {
+    font-size: 11px;
+}
+
 .setting-group-header {
     display: flex;
     align-items: center;
@@ -416,6 +619,143 @@ body {
 }
 
 /* Toggle */
+.sg-iso-settings {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-light);
+}
+
+.small-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.control-row .small-label {
+    width: 60px;
+}
+
+.control-row input[type="range"] {
+    flex: 1;
+}
+
+.control-row .range-value {
+    width: 40px;
+    text-align: right;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.btn-xs {
+    padding: 2px 6px;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    line-height: 1;
+}
+
+.btn-yellow {
+    background-color: #fbbf24;
+    color: #000;
+}
+
+.btn-yellow:hover {
+    background-color: #f59e0b;
+}
+
+/* Presets */
+.preset-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.input-sm {
+    flex: 1;
+    background: #333;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.preset-list {
+    display: flex;
+    flex-wrap: wrap;
+    /* or no-wrap for horizontal scroll, user said "Пресеты идут в строку" implies horizontal? Or just a list? "Пресеты идут в строку" usually means inline. Let's try wrapping tags style. */
+    gap: 6px;
+    max-height: 120px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 6px;
+    border-radius: 4px;
+}
+
+.preset-item {
+    display: inline-flex;
+    align-items: center;
+    background: #444;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 12px;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.preset-item:hover {
+    background: #555;
+    border-color: #666;
+}
+
+.preset-item.active {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+.preset-name {
+    margin-right: 6px;
+}
+
+.preset-del {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+    color: #aaa;
+    font-size: 10px;
+    line-height: 1;
+    margin-left: 4px;
+}
+
+.preset-del:hover {
+    background: #ef4444;
+    color: white;
+}
+
+.empty-msg {
+    color: #666;
+    font-size: 12px;
+    padding: 4px;
+    font-style: italic;
+}
+
 .toggle-wrap {
     display: inline-flex;
     align-items: center;

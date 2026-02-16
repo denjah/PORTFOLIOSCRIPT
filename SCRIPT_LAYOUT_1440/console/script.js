@@ -124,18 +124,18 @@ const LAYOUT_CONFIG = [
             return s;
         })()
     },
-    // 6: 8K — 4 колонки, 9 слотов (центральный герой 2×2)
+    // 6: 8K — 4 колонки, 9 слотов (центральный герой 2×2, 8 карточек вокруг)
     {
         columns: 4, slots: [
-            [0, 1, 1, 1],   // 4 — левый средний
-            [1, 0, 2, 2],   // 1 — большой центр
-            [3, 1, 1, 1],   // 5 — правый средний
-            [0, 2, 1, 1],   // 6 — левый нижний
-            [3, 2, 1, 1],   // 7 — правый нижний
-            [1, 2, 1, 1],   // 8 — под героем слева
-            [2, 2, 1, 1],   // 9 — под героем справа
-            [1, 0, 1, 1],   // 2 — над героем слева (скрыт под героем)
-            [2, 0, 1, 1]    // 3 — над героем справа (скрыт под героем)
+            [1, 0, 2, 2],   // 1 — Hero (Top Center)
+            [0, 0, 1, 1],   // 2 — Left Top
+            [3, 0, 1, 1],   // 3 — Right Top
+            [0, 1, 1, 1],   // 4 — Left Middle
+            [3, 1, 1, 1],   // 5 — Right Middle
+            [0, 2, 1, 1],   // 6 — Left Bottom
+            [1, 2, 1, 1],   // 7 — Below Hero Left
+            [2, 2, 1, 1],   // 8 — Below Hero Right
+            [3, 2, 1, 1]    // 9 — Right Bottom
         ]
     },
     // 7: 9K — 4 колонки, 9 слотов (центральный герой 2×2, альтернативная раскладка)
@@ -170,42 +170,55 @@ const LAYOUT_CONFIG = [
     // 9: 41K — 6 колонок, 41 слот (7 больших героев 2×2 + 34 маленьких)
     {
         columns: 6, slots: [
-            [0, 0, 2, 2],   // 1 — герой верхний левый
+            // Row 0 (Standard)
+            [0, 0, 2, 2],   // 1 — Hero (Top Left)
             [2, 0, 1, 1],   // 2
             [3, 0, 1, 1],   // 3
-            [4, 0, 2, 2],   // 4 — герой верхний правый
-            [2, 1, 1, 1],   // 5 (под 2)
-            [3, 1, 1, 1],   // 6 (под 3)
-            [0, 2, 1, 1],   // 7 (под 1 слева)
-            [1, 2, 1, 1],   // 8 (под 1 справа)
-            [2, 2, 2, 2],   // 13 — герой центр
-            [4, 2, 1, 1],   // 14 (под 4 слева)
-            [5, 2, 1, 1],   // 15 (под 4 справа)
-            [0, 3, 1, 1],   // 16
-            [1, 3, 1, 1],   // 17
-            [4, 3, 1, 1],   // 18
-            [5, 3, 1, 1],   // 19
-            [5, 0, 2, 2],   // 21 — герой правый край
-            [0, 4, 2, 2],   // 22 — герой левый средний
-            [2, 4, 1, 1],   // 23 (под 13 слева)
-            [3, 4, 1, 1],   // 24 (под 13 справа)
-            [4, 4, 2, 2],   // 27 — герой правый средний
-            [2, 5, 1, 1],   // 25
-            [3, 5, 1, 1],   // 26
-            [0, 6, 1, 1],   // 28 (под 22 слева)
-            [1, 6, 1, 1],   // 29 (под 22 справа)
-            [4, 6, 1, 1],   // 30 (под 27 слева)
-            [5, 6, 1, 1],   // 31 (под 27 справа)
-            [0, 7, 1, 1],   // 32
-            [1, 7, 1, 1],   // 33
-            [2, 6, 2, 2],   // 34 — герой центр нижний
-            [4, 7, 1, 1],   // 35
-            [5, 7, 1, 1],   // 36
-            [5, 4, 2, 2],   // 37 — герой правый нижний
-            [0, 8, 1, 1],   // 38
-            [1, 8, 1, 1],   // 39
-            [2, 8, 1, 1],   // 40
-            [3, 8, 1, 1]    // 41
+            [4, 0, 2, 2],   // 4 — Hero (Top Right)
+            [2, 1, 1, 1],   // 5 (Under 2)
+            [3, 1, 1, 1],   // 6 (Under 3)
+            [0, 2, 1, 1],   // 7 (Under 1-Left)
+            [1, 2, 1, 1],   // 8 (Under 1-Right)
+
+            // Row 2 (Shifted Hero)
+            [2, 2, 2, 2],   // 9 — Hero (Center)
+            [4, 2, 1, 1],   // 10 (Under 4-Left)
+            [5, 2, 1, 1],   // 11 (Under 4-Right)
+            [0, 3, 1, 1],   // 12
+            [1, 3, 1, 1],   // 13
+            [4, 3, 1, 1],   // 14
+            [5, 3, 1, 1],   // 15
+
+            // Row 4 (Standard again)
+            [0, 4, 2, 2],   // 16 — Hero (Mid Left)
+            [2, 4, 1, 1],   // 17
+            [3, 4, 1, 1],   // 18
+            [4, 4, 2, 2],   // 19 — Hero (Mid Right)
+            [2, 5, 1, 1],   // 20
+            [3, 5, 1, 1],   // 21
+            [0, 6, 1, 1],   // 22
+            [1, 6, 1, 1],   // 23
+
+            // Row 6 (Shifted Hero again)
+            [2, 6, 2, 2],   // 24 — Hero (Lower Center)
+            [4, 6, 1, 1],   // 25
+            [5, 6, 1, 1],   // 26
+            [0, 7, 1, 1],   // 27
+            [1, 7, 1, 1],   // 28
+            [4, 7, 1, 1],   // 29
+            [5, 7, 1, 1],   // 30
+
+            // Row 8 (Standard)
+            [0, 8, 2, 2],   // 31 — Hero (Bottom Left)
+            [2, 8, 1, 1],   // 32
+            [3, 8, 1, 1],   // 33
+            [4, 8, 2, 2],   // 34 — Hero (Bottom Right)
+            [2, 9, 1, 1],   // 35
+            [3, 9, 1, 1],   // 36
+            [0, 10, 1, 1],  // 37
+            [1, 10, 1, 1],  // 38
+            [4, 10, 1, 1],  // 39
+            [5, 10, 1, 1]   // 40
         ]
     },
     // 10: ISO1 — Diagonal (изометрия, диагональ)
@@ -227,6 +240,20 @@ const LAYOUT_CONFIG = [
         columns: 1,
         isometric: true,
         type: 'stack',
+        slots: []
+    },
+    // 13: P17 - Geometric (1/4 modules)
+    {
+        type: 'p17',
+        isometric: false,
+        columns: 4, // Base columns, but we might use finer grid
+        slots: []
+    },
+    // 14: P09 - Chaotic (Mixed modules)
+    {
+        type: 'p09',
+        isometric: false,
+        columns: 4,
         slots: []
     }
 ];
@@ -256,13 +283,69 @@ function updateConfigForLayout() {
     const idx = getLayoutIndex();
     const layout = LAYOUT_CONFIG[idx];
 
+    // Toggle ISO settings visibility
+    const isoSettingsGroup = document.getElementById('isoSettingsGroup');
+    if (isoSettingsGroup) {
+        isoSettingsGroup.style.display = layout.isometric ? 'block' : 'none';
+    }
+
+    // Toggle ISO Background Controls
+    const isoBgControls = document.getElementById('isoBgControls');
+    if (isoBgControls) {
+        isoBgControls.style.display = layout.isometric ? 'block' : 'none';
+    }
+
+    // Toggle Standard Layout Controls visibility
+    // VertAlign and ContentMargin only make sense for Standard Layouts
+    const standardControls = document.querySelectorAll('.setting-group.sg-frame, .setting-group.sg-shadow, .setting-group:has(#contentMarginRange), .setting-group:has(input[name="vertAlign"])');
+    // Actually, frame and shadow apply to both? 
+    // ISO has its own shadow logic in drawIsometricCard, but it uses getShadowParams.
+    // Let's keep them visible but maybe disable VertAlign for ISO?
+    // VertAlign is irrelevant for ISO. ContentMargin is irrelevant for ISO.
+
     // Isometric layouts don't use column grid
     if (layout.isometric) {
         return;
     }
 
-    CONFIG.columns = layout.columns;
-    CONFIG.workWidth = CONFIG.canvasWidth - 2 * CONFIG.marginLeftRight;
+    // Isometric layouts don't use column grid
+    if (layout.isometric) {
+        return;
+    }
+
+    // New Layouts Logic (P17/P09)
+    const patternGroup = document.getElementById('patternSettingsGroup');
+    if (patternGroup) patternGroup.style.display = 'none';
+
+    if (layout.type === 'p17' || layout.type === 'p09') {
+        if (patternGroup) patternGroup.style.display = 'block';
+        CONFIG.columns = 6; // Dense grid (Standard 3 cols * 2)
+        if (layout.type === 'p17') {
+            layout.slots = generateP17Slots(Math.max(state.images.length, 12), state.p17Seed);
+        } else {
+            layout.slots = generateP09Slots(Math.max(state.images.length, 6), state.p09Seed);
+        }
+    } else {
+        CONFIG.columns = layout.columns;
+    }
+
+    // Check if CONFIG.columns is valid
+    if (!CONFIG.columns) CONFIG.columns = 3;
+
+    CONFIG.workWidth = CONFIG.canvasWidth - 2 * (state.contentMargin !== undefined ? state.contentMargin : CONFIG.marginLeftRight);
+
+    // Recalculate column width based on margins (Content Margin slider)
+    // If state.contentMargin is set, use it. Else use default.
+    const margin = state.contentMargin !== undefined ? state.contentMargin : 100;
+    CONFIG.marginLeftRight = margin;
+    CONFIG.workWidth = CONFIG.canvasWidth - 2 * margin;
+
+    // Use state.columnGap if available, else default to 40
+    CONFIG.columnGap = state.columnGap !== undefined ? state.columnGap : 40;
+    CONFIG.rowGap = state.columnGap !== undefined ? state.columnGap : 40; // Sync row gap? Or separate? Let's sync for now or keep row fixed? 
+    // Usually standard layouts have equal gaps? The original code had fixed 40. 
+    // Let's make rowGap sync with columnGap for uniformity unless requested otherwise.
+
     const gaps = (CONFIG.columns - 1) * CONFIG.columnGap;
     CONFIG.columnWidth = Math.floor((CONFIG.workWidth - gaps) / CONFIG.columns);
     CONFIG.marginTop = getIntroHeight() + getProcessHeight();
@@ -304,25 +387,54 @@ let state = {
     processEnabled: false,
     iconsEnabled: true,
     iconTheme: 'png_black', // png_black | svg_black | svg_white
-    iconRandomizeType: 'position', // position | filename
+    iconRandomizeType: 'position', // position | filename | custom_position
+    iconOpacity: 0.3,
+    iconPositions: [], // Array of {x, y} relative coordinates (0-1)
     icons: { pngBlack: [], svgBlack: [], svgWhite: [] },
     // ISO background
     isoBg: null,
     isoBgType: 'gradient', // gradient | custom
     isoBgHistory: [],
-    isoBgBlur: 20 // Lens blur radius (0-40)
+    // ISO Layout Settings
+    isoSettings: {
+        lens: 0, // 0 = Tele (Isometric), 300 = Fisheye
+        angle: 0,
+        scale: 100,
+        spacing: 100,
+        zInterval: 20, // Depth scale factor
+    },
+    // Presets
+    presets: [],
+    // New Controls
+    vertAlign: 'center', // 'top', 'center', 'bottom'
+    contentMargin: 100, // px
+    columnGap: 40, // px
+    shadowDist: 20,
+    shadowBlur: 40,
+    shadowOpacity: 0.4,
+    shadowDistX: 0,
+    rotateX: 0,
+    rotateY: 0,
+    rotateZ: 0,
+    previewZoom: 100, // Zoom percentage
+    // Shadow Presets
+    shadowPresets: [
+        { name: 'Soft', dist: 20, blur: 40, opacity: 0.4, distX: 0 },
+        { name: 'Medium', dist: 30, blur: 50, opacity: 0.5, distX: 0 },
+        { name: 'Hard', dist: 10, blur: 10, opacity: 0.6, distX: 0 },
+        { name: 'Float', dist: 60, blur: 80, opacity: 0.3, distX: 0 },
+        { name: 'Left', dist: 20, blur: 40, opacity: 0.4, distX: -30 },
+        { name: 'Right', dist: 20, blur: 40, opacity: 0.4, distX: 30 },
+    ],
+    // New Layouts State
+    p17Seed: 12345,
+    p09Seed: 12345,
 };
 
 function getIconsBaseUrl() {
-    const base = document.baseURI || window.location.href;
-    const candidates = ['../../assets/icons/', '/assets/icons/', '../assets/icons/'];
-    for (const path of candidates) {
-        try {
-            const url = new URL(path, base).href;
-            return url;
-        } catch (_) { }
-    }
-    return '';
+    // Vite alias '/assets' -> project root 'assets'
+    // This allows us to use the original files without copying
+    return '/assets/icons/';
 }
 
 function loadIcons() {
@@ -331,6 +443,7 @@ function loadIcons() {
         console.warn('Не удалось определить базовый путь к иконкам');
         return;
     }
+    console.log('Attempting to load icons from base:', base);
     const MAX_ICONS = 160;
     const groups = [
         { folder: 'PNG_BLACK', key: 'pngBlack', prefix: 'ICON_BLACK_', ext: '.png' },
@@ -342,6 +455,7 @@ function loadIcons() {
     groups.forEach(({ folder, key, prefix, ext }) => {
         let pending = MAX_ICONS;
         let finished = 0;
+        let loadedCount = 0;
         for (let i = 1; i <= MAX_ICONS; i++) {
             const num = i.toString().padStart(3, '0');
             const url = `${base}${folder}/${prefix}${num}${ext}`;
@@ -358,10 +472,23 @@ function loadIcons() {
                 } catch (_) { }
                 state.icons[key].push({ src: url, image: img, dataUrl });
                 finished++;
-                if (finished === pending) { done++; if (done === 3) render(); }
+                loadedCount++;
+                if (finished === pending) {
+                    done++;
+                    console.log(`Loaded ${loadedCount} icons for ${key}`);
+                    if (done === 3) render();
+                }
             };
             img.onerror = () => {
                 pending--;
+                // finished++; // Don't increment finished here, just reduce pending total
+                // Actually, logic is: try MAX_ICONS. If error, it means file doesn't exist (end of sequence or gap).
+                // We track completion of *attempts*?
+                // The original logic was: wait for ALL 160 attempts?
+                // Let's just log errors sparingly.
+                if (i === 1) console.warn(`Failed to load first icon for ${key}: ${url}`);
+
+                // Original completion logic:
                 finished++;
                 if (finished >= pending + (MAX_ICONS - pending)) { done++; if (done === 3) render(); }
             };
@@ -369,7 +496,6 @@ function loadIcons() {
             img.src = url;
         }
     });
-    console.log('Загрузка иконок из', base);
 }
 
 // Извлекает номер из суффикса _01, _02, _03 и т.д. для сортировки по имени
@@ -469,12 +595,38 @@ function init() {
 
 function resizeCanvas() {
     const container = document.getElementById('canvasContainer');
-    const maxWidth = Math.min(container.clientWidth - 40, CONFIG.canvasWidth);
-    const scale = maxWidth / CONFIG.canvasWidth;
+    if (!container) return;
 
-    canvas.style.width = `${maxWidth}px`;
-    canvas.style.height = 'auto';
+    // Base width - usually we want it to fit in container
+    // User wants "Zoom" to control width.
+    // Let's say 100% zoom = Fit to Container width (minus padding).
+    // Or 100% = 1:1 pixel size?
+    // User said: "Zoom window I meant that it increases inside <section class="preview-area"> ... It stands across the full width."
+    // This implies 100% slider = 100% Container Width.
+    // And > 100% = Overflow container (scroll).
+
+    const containerW = container.clientWidth - 40; // Padding
+    const zoomFactor = (state.previewZoom || 100) / 100;
+
+    // Calculate drawn width based on zoom
+    // Options:
+    // A) Zoom based on actual pixels (100% = 1440px). 
+    //    Problem: 1440px is too big for most screens. User likely wants "Fit" as base.
+    // B) Zoom based on Container Width (100% = Full Width).
+
+    // Let's go with B, as user said "Stands across full width".
+    // So 100% on slider = containerW.
+    // 50% = half container.
+    // 200% = 2x container.
+
+    const finalWidth = Math.max(100, containerW * zoomFactor);
+
+    canvas.style.width = `${finalWidth}px`;
+    canvas.style.height = 'auto'; // Aspect ratio handles height
     canvas.style.aspectRatio = `${CONFIG.canvasWidth}/${getCanvasHeight()}`;
+
+    // Remove transform scale if we are sizing via width
+    canvas.style.transform = 'none';
 }
 
 function setupEventListeners() {
@@ -522,7 +674,25 @@ function setupEventListeners() {
         bgRandomizeBtn.addEventListener('click', randomizeBgVerticalOffset);
     }
 
-    bgInput.addEventListener('change', handleBgSelect);
+    bgInput.addEventListener('change', (e) => {
+        if (e.target.files[0]) processBgFile(e.target.files[0]);
+    });
+
+    // Background Drop Zone
+    const bgDropZone = document.getElementById('bgDropZone');
+    if (bgDropZone) {
+        bgDropZone.addEventListener('click', () => bgInput.click());
+        bgDropZone.addEventListener('dragover', (e) => { e.preventDefault(); bgDropZone.classList.add('dragover'); });
+        bgDropZone.addEventListener('dragleave', (e) => { e.preventDefault(); bgDropZone.classList.remove('dragover'); });
+        bgDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            bgDropZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                processBgFile(file);
+            }
+        });
+    }
 
     // Settings
     document.querySelectorAll('input[name="aspect"]').forEach(radio => {
@@ -613,9 +783,24 @@ function setupEventListeners() {
     if (processEnabledToggle) { processEnabledToggle.checked = state.processEnabled; processEnabledToggle.addEventListener('change', () => { state.processEnabled = processEnabledToggle.checked; render(); }); }
     if (iconsEnabledToggle) { iconsEnabledToggle.checked = state.iconsEnabled; iconsEnabledToggle.addEventListener('change', () => { state.iconsEnabled = iconsEnabledToggle.checked; render(); }); }
     const iconThemeSelect = document.getElementById('iconThemeSelect');
-    const iconRandomizeSelect = document.getElementById('iconRandomizeSelect');
+    // const iconRandomizeSelect = document.getElementById('iconRandomizeSelect'); // Removed
     if (iconThemeSelect) { iconThemeSelect.value = state.iconTheme; iconThemeSelect.addEventListener('change', () => { state.iconTheme = iconThemeSelect.value; render(); }); }
-    if (iconRandomizeSelect) { iconRandomizeSelect.value = state.iconRandomizeType; iconRandomizeSelect.addEventListener('change', () => { state.iconRandomizeType = iconRandomizeSelect.value; render(); }); }
+
+    // New Icon Controls
+    document.getElementById('iconRandomPlaceBtn')?.addEventListener('click', generateRandomIconPositions);
+    document.getElementById('iconRandomItemBtn')?.addEventListener('click', randomizeIconItems);
+
+    const iconOpacityRange = document.getElementById('iconOpacityRange');
+    const iconOpacityValue = document.getElementById('iconOpacityValue');
+    if (iconOpacityRange) {
+        iconOpacityRange.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            state.iconOpacity = val / 100;
+            if (iconOpacityValue) iconOpacityValue.textContent = val + '%';
+            render();
+        });
+    }
+
     const loadIconsBtn = document.getElementById('loadIconsBtn');
     if (loadIconsBtn) loadIconsBtn.addEventListener('click', loadIcons);
 
@@ -629,7 +814,27 @@ function setupEventListeners() {
     const isoBgInput = document.getElementById('isoBgInput');
     if (isoBgBtn && isoBgInput) {
         isoBgBtn.addEventListener('click', () => isoBgInput.click());
-        isoBgInput.addEventListener('change', handleIsoBgSelect);
+        isoBgInput.addEventListener('change', (e) => {
+            if (e.target.files[0]) processIsoBgFile(e.target.files[0]);
+        });
+    }
+
+    // ISO Background Drop Zone
+    const isoBgDropZone = document.getElementById('isoBgDropZone');
+    if (isoBgDropZone) {
+        isoBgDropZone.addEventListener('click', () => document.getElementById('isoBgInput').click()); // isoBgInput is locally scoped in original code? No, it's global constant or element?
+        // Wait, isoBgInput is defined in line 667 as local const inside setupEventListeners: const isoBgInput = document.getElementById('isoBgInput');
+        // But I need access to it. It is available in this scope.
+        isoBgDropZone.addEventListener('dragover', (e) => { e.preventDefault(); isoBgDropZone.classList.add('dragover'); });
+        isoBgDropZone.addEventListener('dragleave', (e) => { e.preventDefault(); isoBgDropZone.classList.remove('dragover'); });
+        isoBgDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            isoBgDropZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                processIsoBgFile(file);
+            }
+        });
     }
     document.querySelectorAll('input[name="isobg"]').forEach(radio => {
         radio.addEventListener('change', (e) => {
@@ -657,9 +862,383 @@ function setupEventListeners() {
         isoBgBlurRange.addEventListener('input', (e) => {
             state.isoBgBlur = parseInt(e.target.value) || 0;
             if (isoBgBlurValue) isoBgBlurValue.textContent = state.isoBgBlur;
+            if (isoBgBlurValue) isoBgBlurValue.textContent = state.isoBgBlur;
             render();
         });
     }
+
+    // ISO Settings Controls
+    // New Standard Layout Controls
+    // Content Margin
+    const contentMarginRange = document.getElementById('contentMarginRange');
+    const contentMarginValue = document.getElementById('contentMarginValue');
+    if (contentMarginRange) {
+        contentMarginRange.addEventListener('input', (e) => {
+            state.contentMargin = parseInt(e.target.value, 10);
+            if (contentMarginValue) contentMarginValue.textContent = state.contentMargin + 'px';
+            updateConfigForLayout();
+            render();
+        });
+    }
+
+    // Column Gap
+    const columnGapRange = document.getElementById('columnGapRange');
+    const columnGapValue = document.getElementById('columnGapValue');
+    if (columnGapRange) {
+        columnGapRange.addEventListener('input', (e) => {
+            state.columnGap = parseInt(e.target.value, 10);
+            if (columnGapValue) columnGapValue.textContent = state.columnGap + 'px';
+            updateConfigForLayout();
+            render();
+        });
+    }
+
+    // Vertical Align
+    document.querySelectorAll('input[name="vertAlign"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            state.vertAlign = e.target.value;
+            render();
+        });
+    });
+
+    // Advanced Shadows
+    const shadowDistRange = document.getElementById('shadowDistRange');
+    const shadowBlurRange = document.getElementById('shadowBlurRange');
+    const shadowOpacityRange = document.getElementById('shadowOpacityRange');
+
+    if (shadowDistRange) {
+        shadowDistRange.addEventListener('input', (e) => {
+            state.shadowDist = parseInt(e.target.value, 10);
+            document.getElementById('shadowDistValue').textContent = state.shadowDist;
+            render();
+        });
+    }
+    if (shadowBlurRange) {
+        shadowBlurRange.addEventListener('input', (e) => {
+            state.shadowBlur = parseInt(e.target.value, 10);
+            document.getElementById('shadowBlurValue').textContent = state.shadowBlur;
+            render();
+        });
+    }
+    if (shadowOpacityRange) {
+        shadowOpacityRange.addEventListener('input', (e) => {
+            state.shadowOpacity = parseInt(e.target.value, 10) / 100;
+            document.getElementById('shadowOpacityValue').textContent = Math.round(state.shadowOpacity * 100) + '%';
+            render();
+        });
+    }
+
+    // ISO Controls
+    const isoLensRange = document.getElementById('isoLensRange');
+    const isoAngleRange = document.getElementById('isoAngleRange');
+    const isoScaleRange = document.getElementById('isoScaleRange');
+    const isoSpacingRange = document.getElementById('isoSpacingRange');
+    const isoViewAngleRange = document.getElementById('isoViewAngleRange');
+
+    const isoApertureRange = document.getElementById('isoApertureRange');
+    const isoFocusPosRange = document.getElementById('isoFocusPosRange');
+    const isoFocusWidthRange = document.getElementById('isoFocusWidthRange');
+
+    const isoRotXRange = document.getElementById('isoRotXRange');
+    const isoRotYRange = document.getElementById('isoRotYRange');
+    const isoRotZRange = document.getElementById('isoRotZRange');
+    const btnResetRotation = document.getElementById('btnResetRotation');
+
+    const isoLensValue = document.getElementById('isoLensValue');
+    const isoAngleValue = document.getElementById('isoAngleValue');
+    const isoScaleValue = document.getElementById('isoScaleValue');
+    const isoSpacingValue = document.getElementById('isoSpacingValue');
+    const isoViewAngleValue = document.getElementById('isoViewAngleValue');
+
+    const isoApertureValue = document.getElementById('isoApertureValue');
+    const isoFocusPosValue = document.getElementById('isoFocusPosValue');
+    const isoFocusWidthValue = document.getElementById('isoFocusWidthValue');
+
+    const isoRotXValue = document.getElementById('isoRotXValue');
+    const isoRotYValue = document.getElementById('isoRotYValue');
+    const isoRotZValue = document.getElementById('isoRotZValue');
+
+    if (isoLensRange) {
+        isoLensRange.addEventListener('input', (e) => {
+            state.isoSettings.lens = parseInt(e.target.value);
+            if (isoLensValue) isoLensValue.textContent = state.isoSettings.lens;
+            render();
+        });
+    }
+    if (isoApertureRange) {
+        isoApertureRange.addEventListener('input', (e) => {
+            state.isoSettings.aperture = parseFloat(e.target.value);
+            if (isoApertureValue) isoApertureValue.textContent = state.isoSettings.aperture;
+            render();
+        });
+    }
+    if (isoFocusPosRange) {
+        isoFocusPosRange.addEventListener('input', (e) => {
+            state.isoSettings.focusPos = parseInt(e.target.value);
+            if (isoFocusPosValue) isoFocusPosValue.textContent = state.isoSettings.focusPos + '%';
+            render();
+        });
+    }
+    if (isoFocusWidthRange) {
+        isoFocusWidthRange.addEventListener('input', (e) => {
+            state.isoSettings.focusWidth = parseInt(e.target.value);
+            if (isoFocusWidthValue) isoFocusWidthValue.textContent = state.isoSettings.focusWidth;
+            render();
+        });
+    }
+    if (isoAngleRange) {
+        isoAngleRange.addEventListener('input', (e) => {
+            state.isoSettings.angle = parseInt(e.target.value);
+            if (isoAngleValue) isoAngleValue.textContent = state.isoSettings.angle + '°';
+            render();
+        });
+    }
+    if (isoScaleRange) {
+        isoScaleRange.addEventListener('input', (e) => {
+            state.isoSettings.scale = parseInt(e.target.value);
+            if (isoScaleValue) isoScaleValue.textContent = state.isoSettings.scale + '%';
+            render();
+        });
+    }
+    if (isoSpacingRange) {
+        isoSpacingRange.addEventListener('input', (e) => {
+            state.isoSettings.spacing = parseInt(e.target.value);
+            if (isoSpacingValue) isoSpacingValue.textContent = state.isoSettings.spacing + '%';
+            render();
+        });
+    }
+    if (isoViewAngleRange) {
+        isoViewAngleRange.addEventListener('input', (e) => {
+            state.isoSettings.viewAngle = parseInt(e.target.value);
+            if (isoViewAngleValue) isoViewAngleValue.textContent = state.isoSettings.viewAngle + '°';
+            render();
+        });
+    }
+    if (isoRotXRange) {
+        isoRotXRange.addEventListener('input', (e) => {
+            state.isoSettings.rotateX = parseInt(e.target.value);
+            if (isoRotXValue) isoRotXValue.textContent = state.isoSettings.rotateX + '°';
+            render();
+        });
+    }
+    if (isoRotYRange) {
+        isoRotYRange.addEventListener('input', (e) => {
+            state.isoSettings.rotateY = parseInt(e.target.value);
+            if (isoRotYValue) isoRotYValue.textContent = state.isoSettings.rotateY + '°';
+            render();
+        });
+    }
+    if (isoRotZRange) {
+        isoRotZRange.addEventListener('input', (e) => {
+            state.isoSettings.rotateZ = parseInt(e.target.value);
+            if (isoRotZValue) isoRotZValue.textContent = state.isoSettings.rotateZ + '°';
+            render();
+        });
+    }
+
+    if (btnResetRotation) {
+        btnResetRotation.addEventListener('click', () => {
+            state.isoSettings.rotateX = 0;
+            state.isoSettings.rotateY = 0;
+            state.isoSettings.rotateZ = 0;
+
+            if (isoRotXRange) isoRotXRange.value = 0;
+            if (isoRotYRange) isoRotYRange.value = 0;
+            if (isoRotZRange) isoRotZRange.value = 0;
+
+            if (isoRotXValue) isoRotXValue.textContent = '0°';
+            if (isoRotYValue) isoRotYValue.textContent = '0°';
+            if (isoRotZValue) isoRotZValue.textContent = '0°';
+
+            render();
+        });
+    }
+
+    // Shadow Dist X
+    const shadowDistXRange = document.getElementById('shadowDistXRange');
+    if (shadowDistXRange) {
+        shadowDistXRange.addEventListener('input', (e) => {
+            state.shadowDistX = parseInt(e.target.value, 10);
+            document.getElementById('shadowDistXValue').textContent = state.shadowDistX;
+            render();
+        });
+    }
+
+    // Standard 3D Rotation
+    const stdRotXRange = document.getElementById('stdRotXRange');
+    const stdRotYRange = document.getElementById('stdRotYRange');
+    const stdRotZRange = document.getElementById('stdRotZRange');
+    const btnResetStdRotation = document.getElementById('btnResetStdRotation');
+
+    if (stdRotXRange) {
+        stdRotXRange.addEventListener('input', (e) => {
+            state.rotateX = parseInt(e.target.value, 10);
+            document.getElementById('stdRotXValue').textContent = state.rotateX + '°';
+            render();
+        });
+    }
+    if (stdRotYRange) {
+        stdRotYRange.addEventListener('input', (e) => {
+            state.rotateY = parseInt(e.target.value, 10);
+            document.getElementById('stdRotYValue').textContent = state.rotateY + '°';
+            render();
+        });
+    }
+    if (stdRotZRange) {
+        stdRotZRange.addEventListener('input', (e) => {
+            state.rotateZ = parseInt(e.target.value, 10);
+            if (stdRotZValue) stdRotZValue.textContent = state.rotateZ + '°';
+            render();
+        });
+    }
+
+    // Reset Standard Rotation
+    const btnResetStd = document.getElementById('btnResetStdRotation');
+    if (btnResetStd) {
+        btnResetStd.addEventListener('click', () => {
+            state.rotateX = 0;
+            state.rotateY = 0;
+            state.rotateZ = 0;
+            if (stdRotXRange) stdRotXRange.value = 0;
+            if (stdRotYRange) stdRotYRange.value = 0;
+            if (stdRotZRange) stdRotZRange.value = 0;
+            document.getElementById('stdRotXValue').textContent = '0°';
+            document.getElementById('stdRotYValue').textContent = '0°';
+            document.getElementById('stdRotZValue').textContent = '0°';
+            render();
+        });
+    }
+
+    // Collapsible Panels
+    document.querySelectorAll('.collapsible-panel .panel-header').forEach(header => {
+        header.addEventListener('click', () => {
+            header.parentElement.classList.toggle('collapsed');
+        });
+    });
+    // Z-Interval
+    const isoZInt = document.getElementById('isoZIntervalRange');
+    const isoZIntVal = document.getElementById('isoZIntervalValue');
+    if (isoZInt) {
+        isoZInt.addEventListener('input', (e) => {
+            state.isoSettings.zInterval = parseInt(e.target.value, 10);
+            if (isoZIntVal) isoZIntVal.textContent = state.isoSettings.zInterval;
+            render();
+        });
+    }
+
+    // Preview Zoom
+    const zoomRange = document.getElementById('previewZoomRange');
+    const zoomVal = document.getElementById('previewZoomValue');
+    if (zoomRange) {
+        zoomRange.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value, 10);
+            state.previewZoom = val;
+            if (zoomVal) zoomVal.textContent = val + '%';
+
+            // Apply zoom via resize logic (width based)
+            resizeCanvas();
+        });
+    }
+
+    // Toggle Groups functionality
+    document.querySelectorAll('.collapsible-group .group-header').forEach(header => {
+        header.addEventListener('click', () => {
+            header.parentElement.classList.toggle('collapsed');
+        });
+    });
+
+    setupShadowPresetsEvents();
+    setupPatternControls();
+}
+
+function setupPatternControls() {
+    const btn = document.getElementById('btnRandomizePattern');
+    if (btn) {
+        btn.addEventListener('click', () => {
+            // Change seed
+            state.p17Seed = Math.floor(Math.random() * 10000);
+            state.p09Seed = Math.floor(Math.random() * 10000);
+            updateConfigForLayout(); // Re-generate slots
+            render();
+        });
+    }
+}
+
+function setupShadowPresetsEvents() {
+    const list = document.getElementById('shadowPresetsList');
+    const btnAdd = document.getElementById('btnAddShadowPreset');
+    const btnReset = document.getElementById('btnResetShadows');
+
+    const renderPresets = () => {
+        if (!list) return;
+        list.innerHTML = '';
+        state.shadowPresets.forEach((p, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'preset-item'; // Reuse existing style
+            btn.style.margin = '0';
+            btn.innerHTML = `<span class="preset-name">${p.name}</span>`;
+            if (idx > 5) { // Allow deleting custom presets
+                const del = document.createElement('span');
+                del.className = 'preset-del';
+                del.textContent = '×';
+                del.onclick = (e) => {
+                    e.stopPropagation();
+                    state.shadowPresets.splice(idx, 1);
+                    renderPresets();
+                };
+                btn.appendChild(del);
+            }
+            btn.onclick = () => applyShadowPreset(p);
+            list.appendChild(btn);
+        });
+    };
+
+    const applyShadowPreset = (p) => {
+        state.shadowDist = p.dist;
+        state.shadowBlur = p.blur;
+        state.shadowOpacity = p.opacity;
+        state.shadowDistX = p.distX !== undefined ? p.distX : 0;
+
+        // Update UI
+        updateRangeUI('shadowDistRange', 'shadowDistValue', state.shadowDist);
+        updateRangeUI('shadowBlurRange', 'shadowBlurValue', state.shadowBlur);
+        updateRangeUI('shadowOpacityRange', 'shadowOpacityValue', Math.round(state.shadowOpacity * 100) + '%', state.shadowOpacity * 100);
+        updateRangeUI('shadowDistXRange', 'shadowDistXValue', state.shadowDistX);
+
+        render();
+    };
+
+    const updateRangeUI = (id, valId, valText, valInput) => {
+        const input = document.getElementById(id);
+        const span = document.getElementById(valId);
+        if (input) input.value = valInput !== undefined ? valInput : parseInt(valText, 10) || 0;
+        if (span) span.textContent = valText;
+    };
+
+    if (btnReset) {
+        btnReset.addEventListener('click', () => {
+            // Reset to defaults (Soft)
+            applyShadowPreset({ dist: 20, blur: 40, opacity: 0.4, distX: 0 });
+        });
+    }
+
+    if (btnAdd) {
+        btnAdd.addEventListener('click', () => {
+            const name = prompt('Название пресета:', `Preset ${state.shadowPresets.length + 1}`);
+            if (name) {
+                state.shadowPresets.push({
+                    name,
+                    dist: state.shadowDist,
+                    blur: state.shadowBlur,
+                    opacity: state.shadowOpacity,
+                    distX: state.shadowDistX
+                });
+                renderPresets();
+            }
+        });
+    }
+
+    renderPresets();
 }
 
 function handleDragOver(e) {
@@ -684,8 +1263,7 @@ function handleFileSelect(e) {
     loadImages(files);
 }
 
-function handleBgSelect(e) {
-    const file = e.target.files[0];
+function processBgFile(file) {
     if (file) {
         const reader = new FileReader();
         reader.onload = (event) => {
@@ -705,6 +1283,10 @@ function handleBgSelect(e) {
                     saveBgHistoryToLocalStorage();
                 }
 
+                // Update drop zone text
+                const dz = document.getElementById('bgDropZone');
+                if (dz) dz.querySelector('.drop-text').textContent = file.name;
+
                 render();
             };
             img.src = event.target.result;
@@ -714,8 +1296,7 @@ function handleBgSelect(e) {
 }
 
 // ISO Background handler
-function handleIsoBgSelect(e) {
-    const file = e.target.files[0];
+function processIsoBgFile(file) {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -732,6 +1313,10 @@ function handleIsoBgSelect(e) {
                 if (state.isoBgHistory.length > 10) state.isoBgHistory.pop();
                 updateIsoBgHistorySelect();
             }
+
+            // Update drop zone text
+            const dz = document.getElementById('isoBgDropZone');
+            if (dz) dz.querySelector('.drop-text').textContent = file.name;
 
             render();
         };
@@ -910,6 +1495,206 @@ function handleCardDragEnd(e) {
     e.currentTarget.classList.remove('dragging');
     draggedCardIndex = null;
 }
+
+// --- Presets Logic ---
+function initPresets() {
+    const btnSave = document.getElementById('btnSavePreset');
+    const nameInput = document.getElementById('presetNameInput');
+
+    if (btnSave && nameInput) {
+        btnSave.addEventListener('click', () => {
+            const name = nameInput.value.trim();
+            if (name) {
+                savePreset(name);
+                nameInput.value = '';
+            }
+        });
+    }
+    renderPresets();
+}
+
+function savePreset(name) {
+    // Capture visual settings
+    const preset = {
+        id: Date.now(),
+        name: name,
+        layout: getLayoutIndex(), // 0-5
+        layoutChoice: state.layoutChoice, // string key just in case
+        isoSettings: JSON.parse(JSON.stringify(state.isoSettings)),
+        bg: state.bg, // image data?
+        bgType: state.bgType,
+        bgColor: state.bgColor,
+        bgGradient: state.bgGradient,
+        frameSize: state.frameSize,
+        frameColor: state.frameColor,
+        canvasColor: state.canvasColor,
+        aspectRatio: state.aspectRatio,
+        iconTheme: state.iconTheme
+        // We do NOT save specific card images, just settings
+    };
+
+    state.presets.push(preset);
+    renderPresets();
+    saveProject(); // Auto-save project to persist presets
+}
+
+function loadPreset(id) {
+    const preset = state.presets.find(p => p.id === id);
+    if (!preset) return;
+
+    // Apply Settings
+    // Layout
+    const layoutRadios = document.querySelectorAll('input[name="layout"]');
+    if (layoutRadios[preset.layout]) {
+        layoutRadios[preset.layout].checked = true;
+        // Trigger change?
+        state.layoutChoice = preset.layoutChoice || getLayoutChoiceFromIndex(preset.layout);
+    }
+
+    // ISO Settings
+    if (preset.isoSettings) {
+        state.isoSettings = JSON.parse(JSON.stringify(preset.isoSettings));
+        // Update Inputs
+        updateIsoInputs();
+    }
+
+    // BG & Colors
+    state.bgType = preset.bgType;
+    state.bgColor = preset.bgColor;
+    state.bgGradient = preset.bgGradient;
+    state.frameSize = preset.frameSize || 0;
+    state.frameColor = preset.frameColor || 'white';
+    state.canvasColor = preset.canvasColor || '#1a1a1a';
+    state.aspectRatio = preset.aspectRatio || 0.75;
+    state.iconTheme = preset.iconTheme;
+
+    // Update basic inputs
+    const frameSizeInput = document.getElementById('frameSize');
+    if (frameSizeInput) {
+        frameSizeInput.value = state.frameSize;
+        document.getElementById('frameSizeValue').textContent = state.frameSize + 'px';
+    }
+
+    // Background Restore (Complex if it was an image)
+    // If bgType was 'custom' (image), we might not have the image data if it wasn't saved in preset.
+    // Presets usually save CONFIG, not heavy assets.
+    // If user wants to reuse BG image, we should probably store it in state.bgHistory?
+    // For now, let's restore Gradient/Color. If Custom, we might fail if state.bg is not set.
+    // Let's assume user just wants layout settings.
+
+    // Re-render
+    render();
+
+    // Update UI highlights
+    renderPresets();
+}
+
+function deletePreset(id, e) {
+    if (e) e.stopPropagation();
+    state.presets = state.presets.filter(p => p.id !== id);
+    renderPresets();
+    saveProject();
+}
+
+function renderPresets() {
+    const list = document.getElementById('presetList');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (state.presets.length === 0) {
+        list.innerHTML = '<div class="empty-msg">Нет пресетов</div>';
+        return;
+    }
+
+    state.presets.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'preset-item';
+        item.draggable = true;
+        item.dataset.id = p.id;
+
+        item.innerHTML = `
+            <span class="preset-name">${p.name}</span>
+            <div class="preset-del" title="Delete">x</div>
+        `;
+
+        item.addEventListener('click', () => loadPreset(p.id));
+        item.querySelector('.preset-del').addEventListener('click', (e) => deletePreset(p.id, e));
+
+        // Drag Events
+        item.addEventListener('dragstart', handlePresetDragStart);
+        item.addEventListener('dragover', handlePresetDragOver);
+        item.addEventListener('drop', handlePresetDrop);
+
+        list.appendChild(item);
+    });
+}
+
+// Preset Drag & Drop
+let dragSrcEl = null;
+function handlePresetDragStart(e) {
+    dragSrcEl = this;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+}
+function handlePresetDragOver(e) {
+    if (e.preventDefault) e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+}
+function handlePresetDrop(e) {
+    if (e.stopPropagation) e.stopPropagation();
+    if (dragSrcEl !== this) {
+        // Swap IDs in array
+        const srcId = parseInt(dragSrcEl.dataset.id);
+        const targetId = parseInt(this.dataset.id);
+
+        const srcIdx = state.presets.findIndex(p => p.id === srcId);
+        const targetIdx = state.presets.findIndex(p => p.id === targetId);
+
+        if (srcIdx >= 0 && targetIdx >= 0) {
+            const temp = state.presets[srcIdx];
+            state.presets.splice(srcIdx, 1);
+            state.presets.splice(targetIdx, 0, temp);
+            renderPresets();
+            saveProject();
+        }
+    }
+    return false;
+}
+
+function updateIsoInputs() {
+    const ids = {
+        lens: 'isoLensRange',
+        angle: 'isoAngleRange',
+        scale: 'isoScaleRange',
+        spacing: 'isoSpacingRange',
+        viewAngle: 'isoViewAngleRange',
+        rotateX: 'isoRotXRange',
+        rotateY: 'isoRotYRange',
+        rotateZ: 'isoRotZRange',
+        aperture: 'isoApertureRange',
+        focusPos: 'isoFocusPosRange',
+        focusWidth: 'isoFocusWidthRange'
+    };
+    // ... logic copied from loadProject or refactor into shared function
+    // For now, duplicate logic for simplicity or call the one in loadProject if extracted
+    ['isoLensRange', 'isoAngleRange', 'isoScaleRange', 'isoSpacingRange', 'isoViewAngleRange', 'isoRotXRange', 'isoRotYRange', 'isoRotZRange', 'isoApertureRange', 'isoFocusPosRange', 'isoFocusWidthRange'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            const key = id.replace('iso', '').replace('Range', '');
+            let stateKey = key.charAt(0).toLowerCase() + key.slice(1);
+            if (key === 'RotX') stateKey = 'rotateX';
+            if (key === 'RotY') stateKey = 'rotateY';
+            if (key === 'RotZ') stateKey = 'rotateZ';
+
+            if (state.isoSettings[stateKey] !== undefined) {
+                el.value = state.isoSettings[stateKey];
+                const valEl = document.getElementById(id.replace('Range', 'Value'));
+                if (valEl) valEl.textContent = state.isoSettings[stateKey] + (stateKey === 'lens' || stateKey === 'aperture' || stateKey === 'focusWidth' ? '' : (stateKey === 'scale' || stateKey === 'spacing' || stateKey === 'focusPos' ? '%' : '°'));
+            }
+        }
+    });
+}
 function handleCardDragOver(e) {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
@@ -975,142 +1760,185 @@ function getCanvasHeight() {
         return 1080;
     }
 
-    const rows = layoutHeightRows(layout.slots);
+    // Calculate exact height needed by simulating placement
+    let maxContentY = 0;
     const singleH = getSingleHeight();
-    // marginTop already includes intro + process heights via updateConfigForLayout
-    const totalH = CONFIG.marginTop + rows * (singleH + CONFIG.rowGap) - CONFIG.rowGap + CONFIG.marginLeftRight;
+    const slotCount = layout.slots.length;
 
-    return totalH;
+    // We must account for ALL images
+    for (let i = 0; i < state.images.length; i++) {
+        // Find which slot this image goes into
+        const slotIndex = i % slotCount;
+        const cycle = Math.floor(i / slotCount);
+
+        const slot = layout.slots[slotIndex];
+        const col = slot[0];
+        const row = slot[1];
+        const wCols = slot[2];
+        const hRows = slot[3];
+
+        const rowOffset = cycle * layoutHeightRows(layout.slots); // Cycle offset
+
+        // Calculate Y position + Height of this specific card
+        // y = margin + (row + rowOffset) * (singleH + gap)
+        const yTop = CONFIG.marginTop + CONFIG.marginLeftRight + (row + rowOffset) * (singleH + CONFIG.rowGap);
+        const heightPx = hRows * singleH + (hRows - 1) * CONFIG.rowGap;
+
+        maxContentY = Math.max(maxContentY, yTop + heightPx);
+    }
+
+    // Base height if no images (min 1080 or based on layout)
+    if (state.images.length === 0) return 1080;
+
+    // Add bottom padding
+    return Math.max(1080, Math.ceil(maxContentY + 100));
 }
 
 // Isometric layout functions
 function calculateIsometricPositions(cardCount, layoutType) {
     const W = CONFIG.canvasWidth;
     const H = getCanvasHeight();
-    const marginY = 40; // Top/bottom margins
-    const marginX = 50; // Left/right margins (user requested 50px)
 
-    // Card size: maintain aspect ratio
+    // User settings
+    const userLens = state.isoSettings ? (state.isoSettings.lens || 0) : 0;
+    const userAngleOffset = state.isoSettings ? state.isoSettings.angle : 0;
+    const userScalePercent = state.isoSettings ? state.isoSettings.scale : 100;
+    const userSpacingPercent = state.isoSettings ? (state.isoSettings.spacing || 100) : 100;
+    // userViewAngle handles the layout grid angle, but NOT card distortion anymore
+    const userViewAngle = state.isoSettings ? (state.isoSettings.viewAngle || 30) : 30;
+
+    const scaleFactor = userScalePercent / 100;
+    const spacingFactor = userSpacingPercent / 100;
+
+    // View Angle: 0-90. Used for grid calculation.
+    const tiltRad = userViewAngle * Math.PI / 180;
+
+    // Card size
     const cardAspect = state.aspectRatio || 0.75;
-    const cardWidth = 320;
+    const baseCardWidth = 320;
+    const cardWidth = baseCardWidth * scaleFactor;
+    // FIX PROPORTIONS: Determine height strictly by aspect ratio. No squash!
     const cardHeight = cardWidth / cardAspect;
 
     const positions = [];
+    const centerX = W / 2;
+    const centerY = H / 2;
+
+    // Helper to add position
+    const addPos = (x, y, r, depthIndex) => {
+        positions.push({
+            x: x,
+            y: y,
+            rotation: r,
+            width: cardWidth,
+            height: cardHeight,
+            zIndex: depthIndex,
+            // Store raw depth usage for Lens effect later
+            depthVal: depthIndex
+        });
+    };
 
     if (layoutType === 'diagonal') {
-        // ISO1: Diagonal from top-left to bottom-right, -15° rotation, less overlap
-        const startX = marginX + cardWidth / 2;
-        const startY = marginY + cardHeight / 2;
-        const endX = W - marginX - cardWidth / 2;
-        const endY = H - marginY - cardHeight / 2;
+        // ISO1: Diagonal
+        const angleDeg = -15 + userAngleOffset;
+        const angleRad = angleDeg * Math.PI / 180;
 
-        // Increased spacing to reduce overlap
-        const totalDistance = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
-        const minSpacing = cardWidth * 0.35; // Minimum card spacing (reduced overlap)
-        const actualSpacing = Math.max(minSpacing, totalDistance / Math.max(1, cardCount - 1));
+        // Determine spacing
+        const baseSpacing = baseCardWidth * 0.35 * scaleFactor * spacingFactor;
 
-        const angle = Math.atan2(endY - startY, endX - startX);
+        const count = cardCount;
+        const totalLen = (count - 1) * baseSpacing;
 
-        for (let i = 0; i < cardCount; i++) {
-            positions.push({
-                x: startX + Math.cos(angle) * actualSpacing * i,
-                y: startY + Math.sin(angle) * actualSpacing * i,
-                rotation: -15,
-                width: cardWidth,
-                height: cardHeight,
-                zIndex: i
-            });
+        const startX = centerX - (Math.cos(angleRad) * totalLen) / 2;
+        const startY = centerY - (Math.sin(angleRad) * totalLen) / 2;
+
+        for (let i = 0; i < count; i++) {
+            addPos(
+                startX + Math.cos(angleRad) * baseSpacing * i,
+                startY + Math.sin(angleRad) * baseSpacing * i,
+                angleDeg,
+                i
+            );
         }
     } else if (layoutType === 'wave') {
-        // ISO2: TRUE ISOMETRIC - cards placed on tilted table, perspective depth
-        // View from above-right, cards laid out diagonally with depth scaling
+        const isoAngle = tiltRad; // Use view angle for grid tilt
+        const depthAngle = isoAngle + Math.PI / 2;
 
-        // Isometric angle (30° from horizontal for classic isometric)
-        const isoAngle = Math.PI / 6; // 30 degrees
-        const depthAngle = isoAngle + Math.PI / 2; // 120 degrees for depth axis
+        const baseSize = 280 * scaleFactor;
+        const spacing = baseSize * 1.2 * spacingFactor;
 
-        // Layout cards in isometric grid with perspective
-        const baseCardSize = 280;
-        const spacing = baseCardSize * 1.2;
-
-        // Calculate grid dimensions
         const gridCols = Math.ceil(Math.sqrt(cardCount * 1.3));
-        const gridRows = Math.ceil(cardCount / gridCols);
 
-        // Calculate grid bounds to center it properly
+        // Center calc...
+        const tempPos = [];
         let minX = Infinity, maxX = -Infinity;
         let minY = Infinity, maxY = -Infinity;
 
-        // First pass: calculate bounds
         for (let i = 0; i < cardCount; i++) {
             const col = i % gridCols;
             const row = Math.floor(i / gridCols);
+
+            // Grid Projection
             const isoX = col * spacing * Math.cos(isoAngle) + row * spacing * Math.cos(depthAngle);
             const isoY = col * spacing * Math.sin(isoAngle) + row * spacing * Math.sin(depthAngle);
-            const perspectiveY = -row * 15;
-            const depthFactor = row * 0.08;
-            const scale = 1 - depthFactor;
-            const cardW = baseCardSize * scale;
-            const cardH = (baseCardSize / cardAspect) * scale;
 
-            minX = Math.min(minX, isoX - cardW / 2);
-            maxX = Math.max(maxX, isoX + cardW / 2);
-            minY = Math.min(minY, isoY + perspectiveY - cardH / 2);
-            maxY = Math.max(maxY, isoY + perspectiveY + cardH / 2);
+            // Perspective Z shift (visual Y offset)
+            const perspectiveY = -row * 15 * scaleFactor;
+
+            tempPos.push({ x: isoX, y: isoY + perspectiveY, r: row, c: col });
+
+            minX = Math.min(minX, isoX);
+            maxX = Math.max(maxX, isoX);
+            minY = Math.min(minY, isoY + perspectiveY);
+            maxY = Math.max(maxY, isoY + perspectiveY);
         }
 
-        // Center the composition
-        const gridWidth = maxX - minX;
-        const gridHeight = maxY - minY;
-        const offsetX = (W - gridWidth) / 2 - minX;
-        const offsetY = (H - gridHeight) / 2 - minY;
+        const gridW = maxX - minX;
+        const gridH = maxY - minY;
+        const offsetX = centerX - gridW / 2 - minX;
+        const offsetY = centerY - gridH / 2 - minY;
 
-        // Second pass: position cards with centering offset
-        for (let i = 0; i < cardCount; i++) {
-            const col = i % gridCols;
-            const row = Math.floor(i / gridCols);
+        tempPos.forEach((p, i) => {
+            const row = p.r;
+            // Removed depthScale (failed attempt at perspective).
+            // We use standard size, let Lens filter handle perspective later.
 
-            // Isometric projection: convert grid (col, row) to screen (x, y)
-            const isoX = col * spacing * Math.cos(isoAngle) + row * spacing * Math.cos(depthAngle);
-            const isoY = col * spacing * Math.sin(isoAngle) + row * spacing * Math.sin(depthAngle);
-
-            // Perspective: cards further back are smaller and higher
-            const depthFactor = row * 0.08;
-            const scale = 1 - depthFactor;
-            const perspectiveY = -row * 15;
+            // Rotation: -ViewAngle + Offset.
+            // If grid is rotated by ViewAngle, cards should probably counter-rotate or follow?
+            // "Standard Isometrics" often have vertical cards on angled grid.
+            // Let's rely on user Rotation knobs for fine tuning.
+            // Default: -30 + offset was old.
+            const defaultRot = -30 + userAngleOffset;
 
             positions.push({
-                x: offsetX + isoX,
-                y: offsetY + isoY + perspectiveY,
-                rotation: -30, // Consistent isometric rotation
-                width: baseCardSize * scale,
-                height: (baseCardSize / cardAspect) * scale,
-                zIndex: row * gridCols + col // Back to front rendering
+                x: offsetX + p.x,
+                y: offsetY + p.y,
+                rotation: defaultRot,
+                width: baseSize,
+                height: baseSize / cardAspect,
+                zIndex: row * 10 + p.c,
+                depthVal: row
             });
-        }
+        });
+
     } else if (layoutType === 'stack') {
-        // ISO3: Mirrored diagonal (top-right to bottom-left), +15° rotation, less overlap
-        const startX = W - marginX - cardWidth / 2;
-        const startY = marginY + cardHeight / 2;
-        const endX = marginX + cardWidth / 2;
-        const endY = H - marginY - cardHeight / 2;
+        // ISO3
+        const angleDeg = 15 + userAngleOffset;
+        const angleRad = angleDeg * Math.PI / 180;
 
-        // Increased spacing to reduce overlap
-        const totalDistance = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
-        const minSpacing = cardWidth * 0.35; // Minimum card spacing (reduced overlap)
-        const actualSpacing = Math.max(minSpacing, totalDistance / Math.max(1, cardCount - 1));
+        const baseSpacing = baseCardWidth * 0.35 * scaleFactor * spacingFactor;
+        const totalLen = (cardCount - 1) * baseSpacing;
 
-        const angle = Math.atan2(endY - startY, endX - startX);
+        const startX = centerX - (Math.cos(angleRad) * totalLen) / 2;
+        const startY = centerY - (Math.sin(angleRad) * totalLen) / 2;
 
         for (let i = 0; i < cardCount; i++) {
-            positions.push({
-                x: startX + Math.cos(angle) * actualSpacing * i,
-                y: startY + Math.sin(angle) * actualSpacing * i,
-                rotation: 15,
-                width: cardWidth,
-                height: cardHeight,
-                zIndex: i
-            });
+            addPos(
+                startX + Math.cos(angleRad) * baseSpacing * i,
+                startY + Math.sin(angleRad) * baseSpacing * i,
+                angleDeg,
+                i
+            );
         }
     }
 
@@ -1174,22 +2002,202 @@ function renderIsometricLayout(useCtx) {
 
     const positions = calculateIsometricPositions(state.images.length, layout.type);
 
-    // Render from back to front for proper overlap
+    const userRotX = state.isoSettings ? (state.isoSettings.rotateX || 0) : 0;
+    const userRotY = state.isoSettings ? (state.isoSettings.rotateY || 0) : 0;
+    const userRotZ = state.isoSettings ? (state.isoSettings.rotateZ || 0) : 0;
+
+    // Lens/Perspective Factor (0 to 1)
+    const lensVal = state.isoSettings ? (state.isoSettings.lens || 0) : 0;
+
+    // DoF Settings
+    const aperture = state.isoSettings ? (state.isoSettings.aperture || 0) : 0;
+    const focusPos = state.isoSettings ? (state.isoSettings.focusPos || 50) : 50;
+    const focusWidth = state.isoSettings ? (state.isoSettings.focusWidth || 10) : 10;
+
+    // Find depth range to map focusPos
+    let minDepth = Infinity, maxDepth = -Infinity;
+    if (positions.length > 0) {
+        positions.forEach(p => {
+            const d = p.depthVal !== undefined ? p.depthVal : p.zIndex;
+            if (d < minDepth) minDepth = d;
+            if (d > maxDepth) maxDepth = d;
+        });
+    }
+    if (minDepth === Infinity) { minDepth = 0; maxDepth = 1; }
+
+    // Mapped focus target
+    const depthRange = maxDepth - minDepth;
+    // focusPos 0 = Far (minDepth), 100 = Near (maxDepth)? 
+    // Usually focusPos 0 = closest, 100 = infinity?
+    // Let's map 0-100 to minDepth-maxDepth.
+    // If we assume higher zIndex is closer to camera.
+    // Let's say user wants to focus on a specific plane.
+    const targetDepth = minDepth + (depthRange * (focusPos / 100));
+
+    // Rotation transformations
+    // Since we fixed proportions, we render the card as a flat plane rotated in 3D.
+    // Canvas doesn't do true 3D. We use Scale to simulate tilt.
+    // RotX -> ScaleY. RotY -> ScaleX.
+    const scaleY = Math.cos(userRotX * Math.PI / 180);
+    const scaleX = Math.cos(userRotY * Math.PI / 180);
+
+    // Offscreen Canvas for Blur
+    // We create/reuse a separate canvas to draw the card, then render it to main canvas with blur.
+    if (!state.offscreenCanvas) {
+        state.offscreenCanvas = document.createElement('canvas');
+        state.offscreenCtx = state.offscreenCanvas.getContext('2d');
+    }
+    const oCanvas = state.offscreenCanvas;
+    const oCtx = state.offscreenCtx;
+
     state.images.forEach((card, i) => {
         const pos = positions[i];
+        if (!pos) return;
+
+        // Apply Lens Perspective (Focal Length Simulation)
+        // lensVal = 12 (Wide) to 800 (Tele).
+        // Higher zIndex/depthVal means closer to camera.
+        const depth = pos.depthVal !== undefined ? pos.depthVal : pos.zIndex;
+
+        let perspectiveScale = 1;
+        if (lensVal < 800) {
+            // Calculate distance from "camera" plane.
+            // Assume maxDepth is closest (distance 0).
+            // diff is how far back the object is.
+            // Multiplier determines scene "physical" depth.
+            const depthScale = state.isoSettings.zInterval || 20;
+            const distance = (maxDepth - depth) * depthScale;
+            // Standard perspective projection: scale = f / (f + z)
+            perspectiveScale = lensVal / (lensVal + distance);
+
+            // Clamp to avoid extreme shrinking or division by zero issues
+            perspectiveScale = Math.max(0.1, perspectiveScale);
+        }
+
+        // Calculate Blur (DoF)
+        let blurPx = 0;
+        if (aperture > 0) {
+            const dist = Math.abs(depth - targetDepth);
+            const excess = Math.max(0, dist - (focusWidth / 10)); // Allow some range to be sharp
+            // Scale blur by aperture
+            blurPx = excess * (aperture / 10);
+        }
 
         use.save();
+
+        // Translate to Center
         use.translate(pos.x, pos.y);
-        use.rotate(pos.rotation * Math.PI / 180);
 
-        // Draw thickness/depth (8-12px)
-        drawCardDepth(use, pos.width, pos.height);
+        // Apply Lens Scale
+        use.scale(perspectiveScale, perspectiveScale);
 
-        // Draw card with enhanced shadow
-        drawIsometricCard(use, card.image, pos.width, pos.height);
+        // Apply Base Rotation (from layout) + User Z Rotation
+        const totalRot = pos.rotation + userRotZ;
+        use.rotate(totalRot * Math.PI / 180);
+
+        // Apply 3D tilt (Scale)
+        // Note: scaling by cos(deg) shrinks the dimension.
+        // This is mathematically how a rotated plane looks (orthographic).
+        // Since user removed "Distortion", they might mean the pseudo-squash we did before.
+        // Now 'cardHeight' is correct aspect. So this ScaleX/Y will create the "foreshortening".
+        // If they want "No Distortion", maybe they want full un-squashed card but rotated?
+        // That would look like a sticker.
+        // "Proportions fixed" usually means "Don't squash the image content unless rotated".
+        // Current logic: Image is drawn into card, Card is scaled.
+        // This creates "squashed image".
+        // To fix image distortion while rotating card, we'd need texture mapping (too complex).
+        // OR: user just meant "Don't pre-squash the card height in calculation".
+        // We removed pre-squash. So now card is 1:1 aspect.
+        // If RotX=0, it looks perfect.
+        // If RotX=45, it looks like a rotated card.
+        // This should be what they want.
+
+        use.scale(scaleX, scaleY);
+
+        const w = pos.width;
+        const h = pos.height;
+        const halfW = w / 2;
+        const halfH = h / 2;
+
+        // BLUR FIX: Render to offscreen canvas if blur is needed
+        if (blurPx > 0.5) {
+            // Resize offscreen canvas to fit card + blur padding
+            const pad = blurPx * 3; // Sufficient padding
+            oCanvas.width = w + pad * 2;
+            oCanvas.height = h + pad * 2;
+            oCtx.clearRect(0, 0, oCanvas.width, oCanvas.height);
+
+            // Draw card centered on offscreen canvas
+            // drawTransformedCard expects x, y, w, h
+            // We draw at pad, pad
+            drawTransformedCard(oCtx, card.image, pad, pad, w, h);
+
+            // Apply blur filter to MAIN context
+            use.filter = `blur(${blurPx}px)`;
+
+            // Draw the offscreen canvas centered
+            // We need to offset by -halfW - pad
+            use.drawImage(oCanvas, -halfW - pad, -halfH - pad);
+
+            // Reset filter
+            use.filter = 'none';
+        } else {
+            // Standard direct draw
+            drawTransformedCard(use, card.image, -halfW, -halfH, w, h);
+        }
 
         use.restore();
     });
+}
+
+function drawTransformedCard(ctx, img, x, y, w, h) {
+    // 1. Shadow/Depth
+    // Simple offset shadow
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    // Shadow offset should be inverse of rotation?
+    // Keep it simple: standard offset
+    ctx.translate(10, 10);
+    roundRect(ctx, x, y, w, h, 6);
+    ctx.fill();
+    ctx.restore();
+
+    // 2. Image
+    ctx.save();
+    roundRect(ctx, x, y, w, h, 6);
+    ctx.clip();
+
+    // Cover/Contain logic for image inside the card frame
+    // We have w, h.
+    placeImageInRect(ctx, img, x, y, w, h);
+
+    ctx.restore();
+
+    // 3. Frame
+    const frameRgb = state.frameColor === 'black' ? '0,0,0' : '255,255,255';
+    ctx.strokeStyle = `rgba(${frameRgb}, 0.8)`;
+    ctx.lineWidth = state.frameSize;
+    ctx.strokeRect(x, y, w, h);
+}
+
+function placeImageInRect(ctx, img, x, y, w, h) {
+    // Draw image covering the rect
+    const imgAspect = img.width / img.height;
+    const boxAspect = w / h;
+    let drawW, drawH;
+
+    if (imgAspect > boxAspect) {
+        drawH = h;
+        drawW = h * imgAspect;
+    } else {
+        drawW = w;
+        drawH = w / imgAspect;
+    }
+
+    const offX = x + (w - drawW) / 2;
+    const offY = y + (h - drawH) / 2;
+
+    ctx.drawImage(img, offX, offY, drawW, drawH);
 }
 
 
@@ -1273,18 +2281,97 @@ function renderBackground(height, useCtx) {
 
         const offset = state.bgVerticalOffset || 0;
         const sourceY = offset / scaleW;
-        const sourceH = Math.min(bg.height - sourceY, height / scaleW);
 
-        if (scaledHeight >= height) {
-            use.drawImage(bg, 0, sourceY, bg.width, sourceH, 0, 0, W, height);
+        // Calculate content height (cards + margins) for clipping
+        let contentBottom = 0;
+        if (state.images.length > 0) {
+            const currentLayoutSlotRects = state.images.map((_, i) => getSlotRect(i));
+            currentLayoutSlotRects.forEach(r => {
+                contentBottom = Math.max(contentBottom, r.y + r.h);
+            });
+            contentBottom += 100; // Add 100px bottom padding
         } else {
-            // If image is smaller than canvas, tile it vertically
+            contentBottom = height; // Fallback for empty state
+        }
+
+        // Ensure background covers at least the visible canvas or content
+        const drawLimitH = Math.max(height, contentBottom);
+
+        if (scaledHeight >= drawLimitH) {
+            // Background is tall enough, just draw it (clipped to contentBottom if needed)
+            // We draw to 'height' of canvas, but effective "visual" limit is contentBottom.
+            // If canvas height is large (e.g. huge screen), we fill it.
+            // But user requirement says: "If cards are few, bg is clipped by cards + 100px".
+            // So we should fill transparent after contentBottom?
+            // The canvas size itself is determined by getCanvasHeight() which ALREADY calculates based on cards.
+            // So 'height' PASSED to this function IS the content height (roughly).
+            // Let's just draw tiled/mirrored to fill the entire CANVAS height.
+            // The clipping "concept" is handled by canvas height resizing in getCanvasHeight().
+            // Wait, getCanvasHeight() calculates height based on slots.
+            // So if slots end, canvas ends.
+            // So we just need to fill the canvas.
+
+            // Actually, the user says: "If cards are few, and background is long, it is clipped by cards + 100px".
+            // This implies the canvas height should ALREADY be clipped.
+            // Let's re-verify getCanvasHeight().
+
+            // Correct logic: Just fill the 'height' requested.
+            // However, to implementation "vertical mirroring":
+
             let y = 0;
+            let tileIndex = 0;
             while (y < height) {
                 const drawH = Math.min(scaledHeight, height - y);
-                const sourceH = drawH / scaleW;
-                use.drawImage(bg, 0, 0, bg.width, sourceH, 0, y, W, drawH);
+
+                use.save();
+                if (tileIndex % 2 === 1) {
+                    // Mirror vertically
+                    use.translate(0, y + drawH);
+                    use.scale(1, -1);
+                    use.drawImage(bg, 0, 0, bg.width, drawH / scaleW, 0, 0, W, drawH);
+                } else {
+                    use.drawImage(bg, 0, 0, bg.width, drawH / scaleW, 0, y, W, drawH);
+                }
+                use.restore();
+
                 y += drawH;
+                tileIndex++;
+            }
+
+        } else {
+            // Image is smaller than canvas, tile it vertically with mirroring
+            let y = 0;
+            let tileIndex = 0;
+            while (y < height) {
+                // Determine how much of the image we can draw in this tile
+                const tileH = scaledHeight; // Full rendered height of one tile if space permits
+                const drawH = Math.min(tileH, height - y); // Actual height to draw
+                const sourceH = bg.height * (drawH / tileH); // Corresponding source height
+
+                use.save();
+                if (tileIndex % 2 === 1) {
+                    // Mirror vertically
+                    // We want the TOP of the tile (y) to correspond to the BOTTOM of the source image
+                    // And the BOTTOM of the tile (y+drawH) to correspond to the TOP of the source image
+                    // The previous tile (Normal) ended with BOTTOM of source image.
+
+                    use.translate(0, y + drawH);
+                    use.scale(1, -1);
+                    // Draw from source (0,0) to sourceH.
+                    // (0,0) source is Top of image.
+                    // Placed at (0,0) local (which is y+drawH global/Canvas Bottom of tile).
+                    // So Top of Image -> Bottom of Tile.
+                    // SourceH (Bottom of slice) -> Top of Tile.
+                    // This creates proper mirroring: Previous(Bottom) <-> Current(Bottom-at-Top).
+                    use.drawImage(bg, 0, 0, bg.width, sourceH, 0, 0, W, drawH);
+                } else {
+                    // Normal orientation
+                    use.drawImage(bg, 0, 0, bg.width, sourceH, 0, y, W, drawH);
+                }
+                use.restore();
+
+                y += drawH;
+                tileIndex++;
             }
         }
     } else {
@@ -1412,125 +2499,83 @@ function renderProcessBlock(useCtx) {
     use.restore();
 }
 
+function generateRandomIconPositions() {
+    state.iconPositions = [];
+    // Generate 12-15 random positions
+    // Area: 0.05 to 0.95 for both axes
+    const count = 12 + Math.floor(Math.random() * 8);
+    for (let i = 0; i < count; i++) {
+        state.iconPositions.push({
+            x: 0.05 + Math.random() * 0.9,
+            y: 0.05 + Math.random() * 0.9,
+            sizeIndex: Math.random() > 0.7 ? 1 : 0 // 30% chance for large
+        });
+    }
+    render();
+}
+
+function randomizeIconItems() {
+    // Just force a re-render, the render function will pick random items if we implement it that way
+    // Or shuffle the source array?
+    // Let's shuffle the source array in state
+    ['pngBlack', 'svgBlack', 'svgWhite'].forEach(key => {
+        if (state.icons[key]) {
+            state.icons[key].sort(() => Math.random() - 0.5);
+        }
+    });
+    render();
+}
+
 function renderIconsOnCanvas(useCtx) {
     const use = useCtx || ctx;
     if (!state.iconsEnabled) return;
-    const list = state.icons[state.iconTheme] || state.icons.pngBlack || [];
-    if (list.length === 0) return;
-    let arr = [...list];
-    if (state.iconRandomizeType === 'filename') {
-        arr = [...arr].sort(() => Math.random() - 0.5);
+    const list = state.icons[state.iconTheme];
+    if (!list || list.length === 0) return;
+
+    // Use stored positions or generate if empty (and not using legacy fixed positions)
+    // Actually, let's switch to using stored positions as the primary method if 'custom_position' is set
+    // or just always if we want "Random Place" to work.
+
+    if (state.iconPositions.length === 0) {
+        generateRandomIconPositions();
     }
+
+    const sizes = [40, 80]; // Small, Large
     const introH = getIntroHeight();
     const processH = getProcessHeight();
     const totalTop = introH + processH;
-    const sizes = [40, 80];
-    const positions = [
-        [0.05, 0.08], [0.92, 0.12], [0.08, 0.82], [0.9, 0.85],
-        [0.12, 0.35], [0.85, 0.4], [0.1, 0.6], [0.88, 0.65],
-        [0.5, 0.02], [0.5, 0.95]
-    ];
-    let idx = 0;
-    for (let s = 0; s < 2 && idx < arr.length; s++) {
-        const size = sizes[s];
-        for (let p = 0; p < 5 && idx < arr.length; p++) {
-            const pos = state.iconRandomizeType === 'position' ? positions[(idx + p) % positions.length] : positions[p % positions.length];
-            const icon = arr[idx];
-            const img = icon.image;
-            if (img && img.complete && img.naturalWidth) {
-                const x = (pos[0] * CONFIG.canvasWidth) - size / 2;
-                const y = (pos[1] * totalTop) - size / 2;
-                use.globalAlpha = 0.65;
-                use.drawImage(img, Math.max(0, x), Math.max(0, y), size, size);
-                use.globalAlpha = 1;
-            }
-            idx++;
-        }
-    }
-}
 
-function placeImage(img, x, y, w, h, isHero = false) {
-    const pad = 20;
-    const singleHeight = getSingleHeight();
+    // We need to cover the WHOLE canvas height, not just visible area?
+    // Icons should be scattered across the entire scrollable height?
+    // Or just the "work area"?
+    // The previous code used `totalTop`.
+    // `const y = (pos[1] * totalTop) - size / 2;` -> This puts them ONLY in the top Intro/Process area?
+    // User said "above background, below cards". Cards are in the main area.
+    // So icons should probably be EVERYWHERE.
 
-    // Calculate aspect fit
-    const imgAspect = img.width / img.height;
-    const slotAspect = w / h;
-    let drawW, drawH;
+    const height = getCanvasHeight();
 
-    const layoutIdx = getLayoutIndex();
-    const isCover = layoutIdx >= 4;
+    use.save();
+    use.globalAlpha = state.iconOpacity;
 
-    if (isCover) {
-        // Cover (fill)
-        if (imgAspect > slotAspect) {
-            drawH = h;
-            drawW = h * imgAspect;
-        } else {
-            drawW = w;
-            drawH = w / imgAspect;
-        }
-    } else {
-        // Contain (fit)
-        if (imgAspect > slotAspect) {
-            drawW = w;
-            drawH = w / imgAspect;
-        } else {
-            drawH = h;
-            drawW = h * imgAspect;
-        }
-    }
+    state.iconPositions.forEach((pos, idx) => {
+        const icon = list[idx % list.length];
+        if (!icon || !icon.image) return;
 
-    const offsetX = Math.floor(x + (w - drawW) / 2);
-    const offsetY = Math.floor(y + (h - drawH) / 2);
-    drawW = Math.floor(drawW);
-    drawH = Math.floor(drawH);
+        const size = sizes[pos.sizeIndex || 0];
 
-    // Тень: по предустановке
-    const shadow = getShadowParams();
-    ctx.save();
-    ctx.shadowColor = `rgba(0, 0, 0, ${shadow.alpha})`;
-    ctx.shadowBlur = isHero ? shadow.blur * 1.2 : shadow.blur;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = shadow.offsetY;
-    ctx.fillStyle = `rgba(0,0,0,${shadow.alpha * 0.5})`;
-    roundRect(ctx, offsetX + 2, offsetY + shadow.offsetY, drawW, drawH, 4);
-    ctx.fill();
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetY = 0;
-    ctx.restore();
+        // x is relative to canvasWidth
+        const x = (pos.x * CONFIG.canvasWidth) - size / 2;
 
-    // Draw image with rounded corners
-    ctx.save();
-    roundRect(ctx, offsetX, offsetY, drawW, drawH, 4);
-    ctx.clip();
-    ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
-    ctx.restore();
+        // y is relative to... full height?
+        // Let's spread them over the full height
+        const y = (pos.y * height) - size / 2;
 
-    // Рамка карточки (без тени, чтобы не расплывалась)
-    ctx.save();
-    ctx.beginPath();
-    roundRect(ctx, offsetX, offsetY, drawW, drawH, 4);
-    if (isHero) {
-        ctx.shadowColor = 'rgba(59, 130, 246, 0.4)';
-        ctx.shadowBlur = 8;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-        ctx.lineWidth = 3;
-    } else {
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-        ctx.lineWidth = 1;
-    }
-    ctx.stroke();
-    ctx.restore();
+        use.drawImage(icon.image, x, y, size, size);
 
-    // Inner frame (белая/чёрная, размер из настройки)
-    const frameRgb = state.frameColor === 'black' ? '0, 0, 0' : '255, 255, 255';
-    ctx.strokeStyle = `rgba(${frameRgb}, 0.9)`;
-    ctx.lineWidth = state.frameSize;
-    ctx.strokeRect(offsetX, offsetY, drawW, drawH);
+    });
+
+    use.restore();
 }
 
 function roundRect(ctx, x, y, w, h, r) {
@@ -1736,16 +2781,16 @@ function exportImage() {
     link.click();
 }
 
+function placeImage(img, x, y, w, h, isHero = false) {
+    placeImageOnCtx(ctx, img, x, y, w, h, isHero);
+}
+
 function placeImageOnCtx(ctx, img, x, y, w, h, isHero = false) {
-    const pad = 20;
     const imgAspect = img.width / img.height;
     const slotAspect = w / h;
     let drawW, drawH;
 
-    // Check layout index from state or pass it?
-    // Since placeImageOnCtx is used in exportAllLayouts where state.layoutChoice changes, 
-    // we can rely on state.layoutChoice if it's updated correctly before call.
-    // exportAllLayouts updates state.layoutChoice.
+    // Check layout index from state
     const layoutIdx = getLayoutIndex();
     const isCover = layoutIdx >= 4;
 
@@ -1772,30 +2817,89 @@ function placeImageOnCtx(ctx, img, x, y, w, h, isHero = false) {
     drawW = Math.floor(drawW);
     drawH = Math.floor(drawH);
 
-    // Тень: по предустановке
-    const shadow = getShadowParams();
+    // Advanced Shadows
+    const dist = state.shadowDist !== undefined ? state.shadowDist : 20;
+    const blur = state.shadowBlur !== undefined ? state.shadowBlur : 40;
+    const opacity = state.shadowOpacity !== undefined ? state.shadowOpacity : 0.4;
+
     ctx.save();
-    ctx.shadowColor = `rgba(0, 0, 0, ${shadow.alpha})`;
-    ctx.shadowBlur = isHero ? shadow.blur * 1.2 : shadow.blur;
+    ctx.shadowColor = `rgba(0, 0, 0, ${opacity})`;
+    ctx.shadowBlur = isHero ? blur * 1.5 : blur;
     ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = shadow.offsetY;
-    ctx.fillStyle = `rgba(0, 0, 0, ${shadow.alpha * 0.5})`;
-    roundRect(ctx, offsetX + 2, offsetY + shadow.offsetY, drawW, drawH, 4);
-    ctx.fill();
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetY = 0;
+    ctx.shadowOffsetY = dist; // Vertical distance
+    ctx.fillStyle = `rgba(0,0,0,${opacity * 0.5})`;
+
+    // Vertical Align Logic
+    let finalY = offsetY;
+    if (state.vertAlign === 'top') {
+        finalY = y;
+    } else if (state.vertAlign === 'bottom') {
+        finalY = y + (h - drawH);
+    }
+    // 'center' is default
+
+    // 3D Rotation (Standard)
+    const cx = offsetX + drawW / 2;
+    const cy = finalY + drawH / 2;
+    const radX = (state.rotateX || 0) * Math.PI / 180;
+    const radY = (state.rotateY || 0) * Math.PI / 180;
+    const radZ = (state.rotateZ || 0) * Math.PI / 180;
+    const scaleX = Math.abs(Math.cos(radY));
+    const scaleY = Math.abs(Math.cos(radX));
+    const shadowDX = (state.shadowDistX || 0);
+
+    // Calculate 2D offsets for shadow
+    const sX = (state.shadowDistX || 0);
+    const sY = dist;
+
+    // --- SHADOW PASS ---
+    ctx.save();
+    // 1. Move to Center
+    ctx.translate(cx, cy);
+    // 2. Rotate & Scale
+    ctx.rotate(radZ);
+    // Note: If we want "perspective" we might need more math, 
+    // but scale is what we have.
+    ctx.scale(scaleX, scaleY);
+    // 3. Draw Relative to Center (at -w/2, -h/2)
+    // Shadow rect is also offset by sX, sY
+    const shX = -drawW / 2 + 2 + sX;
+    const shY = -drawH / 2 + sY;
+
+    ctx.fillStyle = `rgba(0,0,0,${opacity * 0.5})`;
+
+    if (opacity > 0) {
+        if (blur > 0) ctx.filter = `blur(${blur}px)`;
+        roundRect(ctx, shX, shY, drawW, drawH, 4);
+        ctx.fill();
+        ctx.filter = 'none';
+    }
     ctx.restore();
 
+    // --- IMAGE PASS ---
     ctx.save();
-    roundRect(ctx, offsetX, offsetY, drawW, drawH, 4);
+    ctx.translate(cx, cy);
+    ctx.rotate(radZ);
+    ctx.scale(scaleX, scaleY);
+
+    // Draw relative to center
+    const drawX = -drawW / 2;
+    const drawY = -drawH / 2;
+
+    roundRect(ctx, drawX, drawY, drawW, drawH, 4);
     ctx.clip();
-    ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+    ctx.drawImage(img, drawX, drawY, drawW, drawH);
     ctx.restore();
 
+    // --- FRAME PASS ---
     ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(radZ);
+    ctx.scale(scaleX, scaleY);
+
     ctx.beginPath();
-    roundRect(ctx, offsetX, offsetY, drawW, drawH, 4);
+    roundRect(ctx, drawX, drawY, drawW, drawH, 4);
+
     if (isHero) {
         ctx.shadowColor = 'rgba(59, 130, 246, 0.4)';
         ctx.shadowBlur = 8;
@@ -1808,12 +2912,13 @@ function placeImageOnCtx(ctx, img, x, y, w, h, isHero = false) {
         ctx.lineWidth = 1;
     }
     ctx.stroke();
-    ctx.restore();
 
     const frameRgb = state.frameColor === 'black' ? '0, 0, 0' : '255, 255, 255';
     ctx.strokeStyle = `rgba(${frameRgb}, 0.9)`;
     ctx.lineWidth = state.frameSize;
-    ctx.strokeRect(offsetX, offsetY, drawW, drawH);
+    ctx.strokeRect(drawX, drawY, drawW, drawH);
+
+    ctx.restore();
 }
 
 // Сохранение проекта
@@ -1846,7 +2951,23 @@ function saveProject() {
         processEnabled: state.processEnabled,
         iconsEnabled: state.iconsEnabled,
         iconTheme: state.iconTheme,
-        iconRandomizeType: state.iconRandomizeType
+        iconTheme: state.iconTheme,
+        iconRandomizeType: state.iconRandomizeType,
+        isoSettings: state.isoSettings || {},
+        iconRandomizeType: state.iconRandomizeType,
+        isoSettings: state.isoSettings || {},
+        presets: state.presets || [],
+        // New Controls
+        vertAlign: state.vertAlign,
+        contentMargin: state.contentMargin,
+        columnGap: state.columnGap,
+        shadowDist: state.shadowDist,
+        shadowBlur: state.shadowBlur,
+        shadowOpacity: state.shadowOpacity,
+        shadowDistX: state.shadowDistX,
+        rotateX: state.rotateX,
+        rotateY: state.rotateY,
+        rotateZ: state.rotateZ
     };
     const json = JSON.stringify(projectData);
     const blob = new Blob([json], { type: 'application/json' });
@@ -1893,7 +3014,75 @@ function loadProject() {
                 state.processEnabled = projectData.processEnabled !== undefined ? projectData.processEnabled : state.processEnabled;
                 state.iconsEnabled = projectData.iconsEnabled !== undefined ? projectData.iconsEnabled : state.iconsEnabled;
                 state.iconTheme = projectData.iconTheme ?? state.iconTheme;
+                state.iconTheme = projectData.iconTheme ?? state.iconTheme;
                 state.iconRandomizeType = projectData.iconRandomizeType ?? state.iconRandomizeType;
+                if (projectData.isoSettings) {
+                    state.isoSettings = { ...state.isoSettings, ...projectData.isoSettings };
+
+                    // Update ISO controls inputs
+                    const ids = {
+                        lens: 'isoLensRange',
+                        angle: 'isoAngleRange',
+                        scale: 'isoScaleRange',
+                        spacing: 'isoSpacingRange',
+                        viewAngle: 'isoViewAngleRange',
+                        rotateX: 'isoRotXRange',
+                        rotateY: 'isoRotYRange',
+                        rotateZ: 'isoRotZRange',
+                        aperture: 'isoApertureRange',
+                        focusPos: 'isoFocusPosRange',
+                        focusWidth: 'isoFocusWidthRange'
+                    };
+                    ['isoLensRange', 'isoAngleRange', 'isoScaleRange', 'isoSpacingRange', 'isoViewAngleRange', 'isoRotXRange', 'isoRotYRange', 'isoRotZRange', 'isoApertureRange', 'isoFocusPosRange', 'isoFocusWidthRange'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            const key = id.replace('iso', '').replace('Range', '');
+                            let stateKey = key.charAt(0).toLowerCase() + key.slice(1);
+                            if (key === 'RotX') stateKey = 'rotateX';
+                            if (key === 'RotY') stateKey = 'rotateY';
+                            if (key === 'RotZ') stateKey = 'rotateZ';
+
+                            if (state.isoSettings[stateKey] !== undefined) {
+                                el.value = state.isoSettings[stateKey];
+                                const valEl = document.getElementById(id.replace('Range', 'Value'));
+                                if (valEl) valEl.textContent = state.isoSettings[stateKey] + (stateKey === 'lens' || stateKey === 'aperture' || stateKey === 'focusWidth' ? '' : (stateKey === 'scale' || stateKey === 'spacing' || stateKey === 'focusPos' ? '%' : '°'));
+                            }
+                        }
+                    });
+                }
+
+
+                // Load New Controls
+                state.vertAlign = projectData.vertAlign || 'center';
+                state.contentMargin = projectData.contentMargin !== undefined ? projectData.contentMargin : 100;
+                state.columnGap = projectData.columnGap !== undefined ? projectData.columnGap : 40;
+                state.shadowDist = projectData.shadowDist || 20;
+                state.shadowBlur = projectData.shadowBlur || 40;
+                state.shadowBlur = projectData.shadowBlur || 40;
+                state.shadowOpacity = projectData.shadowOpacity || 0.4;
+                state.shadowDistX = projectData.shadowDistX || 0;
+                state.rotateX = projectData.rotateX || 0;
+                state.rotateY = projectData.rotateY || 0;
+                state.rotateZ = projectData.rotateZ || 0;
+
+                // Update Inputs
+                const cmEl = document.getElementById('contentMarginRange');
+                if (cmEl) { cmEl.value = state.contentMargin; document.getElementById('contentMarginValue').textContent = state.contentMargin + 'px'; }
+
+                const cgEl = document.getElementById('columnGapRange');
+                if (cgEl) { cgEl.value = state.columnGap; document.getElementById('columnGapValue').textContent = state.columnGap + 'px'; }
+
+                document.querySelectorAll('input[name="vertAlign"]').forEach(r => r.checked = r.value === state.vertAlign);
+
+                const sdEl = document.getElementById('shadowDistRange');
+                if (sdEl) { sdEl.value = state.shadowDist; document.getElementById('shadowDistValue').textContent = state.shadowDist; }
+
+                const sbEl = document.getElementById('shadowBlurRange');
+                if (sbEl) { sbEl.value = state.shadowBlur; document.getElementById('shadowBlurValue').textContent = state.shadowBlur; }
+
+                const soEl = document.getElementById('shadowOpacityRange');
+                if (soEl) { soEl.value = state.shadowOpacity * 100; document.getElementById('shadowOpacityValue').textContent = Math.round(state.shadowOpacity * 100) + '%'; }
+
                 if (projectData.processImage) {
                     const img = new Image();
                     img.onload = () => {
@@ -2030,6 +3219,103 @@ function updateThemeButtons(theme) {
 // Start
 initTheme();
 init();
+initPresets();
 
 // Initial render
 render();
+
+// --- Pattern Generators ---
+
+function seededRandom(seed) {
+    var x = Math.sin(seed++) * 10000;
+    return x - Math.floor(x);
+}
+
+function generateP17Slots(count, seed) {
+    const slots = [];
+    const cols = 6; // Matches CONFIG.columns
+    let r = 0, c = 0;
+    const patternType = Math.floor(seededRandom(seed) * 4); // 0-3
+
+    let itemsPlaced = 0;
+    let attempts = 0;
+    let maxAttempts = count * 4;
+
+    while (itemsPlaced < count && attempts < maxAttempts) {
+        let valid = true;
+        // Pattern 0: Standard Grid
+        if (patternType === 0) valid = true;
+        // Pattern 1: Checkerboard (skip 1, place 1)
+        if (patternType === 1) { if ((r + c) % 2 !== 0) valid = false; }
+        // Pattern 2: Diagonals
+        if (patternType === 2) { if ((r + c) % 3 === 0) valid = false; }
+        // Pattern 3: Random gaps
+        if (patternType === 3) { if (seededRandom(seed + attempts) > 0.8) valid = false; }
+
+        if (valid) {
+            slots.push([c, r, 1, 1]);
+            itemsPlaced++;
+        }
+        c++;
+        if (c >= cols) { c = 0; r++; }
+        attempts++;
+    }
+    // Fill remaining
+    while (itemsPlaced < count) {
+        slots.push([c, r, 1, 1]);
+        itemsPlaced++;
+        c++;
+        if (c >= cols) { c = 0; r++; }
+    }
+    return slots;
+}
+
+function generateP09Slots(count, seed) {
+    const slots = [];
+    const cols = 6;
+    const used = {}; // Map "r,c" -> true
+
+    function isOccupied(c, r, w, h) {
+        for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+                if (used[`${r + y},${c + x}`]) return true;
+                if (c + x > cols) return true; // Fix boundary check
+            }
+        }
+        return false;
+    }
+
+    function markOccupied(c, r, w, h) {
+        for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+                used[`${r + y},${c + x}`] = true;
+            }
+        }
+    }
+
+    let r = 0;
+    let c = 0;
+    let placed = 0;
+    let currentSeed = seed;
+
+    while (placed < count) {
+        // Find next empty 1x1 spot
+        while (isOccupied(c, r, 1, 1)) {
+            c++;
+            if (c >= cols) { c = 0; r++; }
+        }
+
+        // Decide size: Large (2x2) or Small (1x1)
+        const isLarge = seededRandom(currentSeed++) > 0.7;
+
+        if (isLarge && !isOccupied(c, r, 2, 2) && c + 2 <= cols) {
+            slots.push([c, r, 2, 2]);
+            markOccupied(c, r, 2, 2);
+        } else {
+            slots.push([c, r, 1, 1]);
+            markOccupied(c, r, 1, 1);
+        }
+        placed++;
+    }
+    return slots;
+}

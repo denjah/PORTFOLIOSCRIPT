@@ -20,7 +20,6 @@
                     <button type="button" class="theme-btn" id="themeDarkBtn" onclick="toggleTheme('dark')"
                         title="Тёмная тема">🌙</button>
                 </div>
-                <!-- Layout Selector -->
                 <div class="layout-selector-header">
                     <div class="radio-group radio-group-pills">
                         <label class="pill-label"><input type="radio" name="layout" value="0"
@@ -37,10 +36,17 @@
                         <label class="pill-label"><input type="radio" name="layout" value="10"><span>ISO1</span></label>
                         <label class="pill-label"><input type="radio" name="layout" value="11"><span>ISO2</span></label>
                         <label class="pill-label"><input type="radio" name="layout" value="12"><span>ISO3</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="13"><span>P17</span></label>
+                        <label class="pill-label"><input type="radio" name="layout" value="14"><span>P09</span></label>
                     </div>
                 </div>
             </div>
             <div class="header-right">
+                <div class="control-row" style="margin-right: 15px; margin-bottom: 0;">
+                    <label class="small-label" style="width: auto; margin-right: 5px;">Zoom</label>
+                    <input type="range" id="previewZoomRange" min="10" max="200" value="100" style="width: 100px;">
+                    <span id="previewZoomValue" class="range-value" style="width: 35px;">100%</span>
+                </div>
                 <button class="btn btn-accent btn-sm" id="exportPngBtn" disabled>
                     <span class="btn-icon">📷</span> PNG
                 </button>
@@ -56,227 +62,408 @@
             </div>
         </header>
 
-        <main class="main-row">
-            <aside class="sidebar">
-                <!-- Upload & Project -->
-                <section class="panel" id="uploadSection">
-                    <div class="panel-header">
-                        <h3 class="panel-title">Проект</h3>
-                        <div class="panel-actions">
-                            <button type="button" class="btn btn-ghost btn-xs" id="saveProjectBtn">💾 Сохранить</button>
-                            <button type="button" class="btn btn-ghost btn-xs" id="loadProjectBtn">📂 Загрузить</button>
+        <main class="app-grid">
+            <!-- LEFT SIDEBAR -->
+            <aside class="sidebar-left">
+                <!-- PRESETS BLOCK -->
+                <section class="panel presets-panel collapsible-panel" id="presetsGroup">
+                    <div class="panel-header toggle-header">
+                        <h3 class="panel-title"><span class="toggle-icon">+</span> Пресеты вида</h3>
+                    </div>
+                    <div class="panel-content">
+                        <div class="preset-controls" style="padding: 0 10px 10px 10px;">
+                            <input type="text" id="presetNameInput" placeholder="Имя пресета..." class="input-sm"
+                                style="margin-right:5px;">
+                            <button id="btnSavePreset" class="btn btn-primary btn-sm">Save</button>
+                        </div>
+                        <div id="presetList" class="preset-list" style="margin: 0 10px 10px 10px;">
+                            <div class="empty-msg">Нет пресетов</div>
                         </div>
                     </div>
-                    <div class="upload-zone" id="uploadZone">
-                        <span class="upload-icon">📁</span>
-                        <span class="upload-label">Перетащите изображения или нажмите для выбора</span>
-                        <input type="file" id="fileInput" multiple accept="image/*">
+                </section>
+
+                <!-- Upload & Project -->
+                <section class="panel collapsible-panel" id="uploadSection">
+                    <div class="panel-header toggle-header">
+                        <h3 class="panel-title"><span class="toggle-icon">+</span> Проект</h3>
+                        <div class="panel-actions">
+                            <button type="button" class="btn btn-ghost btn-xs" id="saveProjectBtn"
+                                title="Сохранить">💾</button>
+                            <button type="button" class="btn btn-ghost btn-xs" id="loadProjectBtn"
+                                title="Загрузить">📂</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="upload-zone" id="uploadZone">
+                            <span class="upload-icon">📁</span>
+                            <span class="upload-label">Перетащите изображения</span>
+                            <input type="file" id="fileInput" multiple accept="image/*">
+                        </div>
+
+                        <!-- Intro & Process Settings moved here -->
+                        <div class="setting-group sg-intro mt-2">
+                            <div class="setting-group-header">
+                                <label class="label">Вступление</label>
+                                <label class="toggle-wrap"><input type="checkbox" id="introEnabledToggle"
+                                        class="module-toggle"> <span class="toggle-label">вкл</span></label>
+                            </div>
+                            <div class="intro-controls">
+                                <input type="text" id="introTitleInput" class="input" placeholder="Заголовок">
+                                <textarea id="introTextInput" class="textarea" placeholder="Текст" rows="2"></textarea>
+                                <div class="font-row">
+                                    <select id="introFontSelect" class="select select-sm">
+                                        <option value="'Helvetica Neue', Arial, sans-serif">Helvetica</option>
+                                        <option value="Georgia, serif">Georgia</option>
+                                    </select>
+                                    <input type="number" id="introFontSizeInput" class="input input-num" value="48">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-group sg-process mt-2">
+                            <div class="setting-group-header">
+                                <label class="label">Процесс</label>
+                                <label class="toggle-wrap"><input type="checkbox" id="processEnabledToggle"
+                                        class="module-toggle"> <span class="toggle-label">вкл</span></label>
+                            </div>
+                            <div class="process-controls">
+                                <input type="text" id="processSectionTitleInput" class="input"
+                                    placeholder="Заголовок секции">
+                                <div class="font-row">
+                                    <select id="processFontSelect" class="select select-sm">
+                                        <option value="'Helvetica Neue', Arial, sans-serif">Helvetica</option>
+                                    </select>
+                                    <input type="number" id="processFontSizeInput" class="input input-num" value="18">
+                                </div>
+                                <div class="process-image-row">
+                                    <label class="btn btn-outline btn-xs">Img <input type="file" id="processImageInput"
+                                            accept="image/*" class="sr-only"></label>
+                                    <span id="processImageName" class="hint"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
                 <!-- Cards -->
-                <section class="panel cards-panel" id="cardsSection">
-                    <div class="panel-header">
-                        <h3 class="panel-title">Карточки</h3>
-                        <button type="button" class="btn btn-ghost btn-xs" id="clearCardsBtn">🗑️ Очистить</button>
+                <section class="panel cards-panel collapsible-panel expanded" id="cardsSection">
+                    <div class="panel-header toggle-header">
+                        <h3 class="panel-title"><span class="toggle-icon">-</span> Карточки</h3>
+                        <button type="button" class="btn btn-ghost btn-xs" id="clearCardsBtn">🗑️</button>
                     </div>
-                    <div class="cards-list" id="cardsList"></div>
-                </section>
-
-                <!-- Layout Settings -->
-                <section class="panel settings-panel">
-                    <h3 class="panel-title">Настройки</h3>
-
-                    <!-- Aspect ratio -->
-                    <div class="setting-group sg-aspect">
-                        <label class="label">Пропорция</label>
-                        <div class="radio-group radio-group-pills">
-                            <label class="pill-label"><input type="radio" name="aspect" value="1"
-                                    checked><span>1:1</span></label>
-                            <label class="pill-label"><input type="radio" name="aspect"
-                                    value="0.75"><span>3:4</span></label>
-                        </div>
-                    </div>
-
-                    <!-- Background -->
-                    <div class="setting-group sg-bg">
-                        <label class="label">Обычный фон</label>
-                        <div class="bg-controls">
-                            <div class="radio-group radio-group-pills">
-                                <label class="pill-label"><input type="radio" name="bg" value="random"
-                                        checked><span>Случайный</span></label>
-                                <button type="button" class="btn btn-outline btn-xs" id="customBgBtn">Свой</button>
-                            </div>
-                            <select id="bgHistorySelect" class="select select-sm">
-                                <option value="">История фонов</option>
-                            </select>
-                            <button type="button" class="btn btn-ghost btn-xs" id="bgRandomizeBtn"
-                                title="Рандом по вертикали">🎲</button>
-                            <input type="file" id="bgInput" accept="image/*" class="sr-only">
-                        </div>
-                    </div>
-
-                    <!-- ISO Background -->
-                    <div class="setting-group sg-iso-bg">
-                        <label class="label">ISO фон</label>
-                        <div class="bg-controls">
-                            <div class="radio-group radio-group-pills">
-                                <label class="pill-label"><input type="radio" name="isobg" value="gradient"
-                                        checked><span>Градиент</span></label>
-                                <button type="button" class="btn btn-outline btn-xs" id="isoBgBtn">Свой</button>
-                            </div>
-                            <select id="isoBgHistorySelect" class="select select-sm">
-                                <option value="">История ISO фонов</option>
-                            </select>
-                            <div class="blur-control">
-                                <label class="label-inline">Lens Blur</label>
-                                <input type="range" id="isoBgBlurRange" min="0" max="40" value="20" class="range-sm">
-                                <span id="isoBgBlurValue" class="range-value">20</span>
-                            </div>
-                            <input type="file" id="isoBgInput" accept="image/*" class="sr-only">
-                        </div>
-                    </div>
-
-                    <!-- Frame -->
-                    <div class="setting-group setting-row sg-frame">
-                        <label class="label">Рамка</label>
-                        <div class="radio-group radio-group-pills">
-                            <label class="pill-label"><input type="radio" name="frame" value="white"
-                                    checked><span>Белая</span></label>
-                            <label class="pill-label"><input type="radio" name="frame"
-                                    value="black"><span>Чёрная</span></label>
-                        </div>
-                        <label class="small-label">Размер</label>
-                        <input type="number" id="frameSizeInput" class="input input-num" value="2" min="1" max="8"
-                            step="1">
-                    </div>
-
-                    <!-- Shadow -->
-                    <div class="setting-group sg-shadow">
-                        <label class="label">Тени</label>
-                        <div class="radio-group radio-group-pills">
-                            <label class="pill-label"><input type="radio" name="shadow" value="1"><span>1</span></label>
-                            <label class="pill-label"><input type="radio" name="shadow" value="2"><span>2</span></label>
-                            <label class="pill-label"><input type="radio" name="shadow" value="3"
-                                    checked><span>3</span></label>
-                            <label class="pill-label"><input type="radio" name="shadow" value="4"><span>4</span></label>
-                            <label class="pill-label"><input type="radio" name="shadow" value="5"><span>5</span></label>
-                            <label class="pill-label"><input type="radio" name="shadow" value="6"><span>6</span></label>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Intro -->
-                <section class="panel">
-                    <div class="setting-group sg-intro">
-                        <div class="setting-group-header">
-                            <label class="label">Вступление</label>
-                            <label class="toggle-wrap"><input type="checkbox" id="introEnabledToggle"
-                                    class="module-toggle"> <span class="toggle-label">вкл</span></label>
-                        </div>
-                        <div class="intro-controls">
-                            <input type="text" id="introTitleInput" class="input" placeholder="Заголовок вступления">
-                            <textarea id="introTextInput" class="textarea" placeholder="Текст вступления"
-                                rows="3"></textarea>
-                            <div class="font-row">
-                                <label class="small-label">Шрифт</label>
-                                <select id="introFontSelect" class="select">
-                                    <option value="'Helvetica Neue', Arial, sans-serif">Helvetica Neue</option>
-                                    <option value="Georgia, serif">Georgia</option>
-                                    <option value="'Segoe UI', sans-serif">Segoe UI</option>
-                                    <option value="'Open Sans', sans-serif">Open Sans</option>
-                                </select>
-                                <label class="small-label">Размер</label>
-                                <input type="number" id="introFontSizeInput" class="input input-num" value="48" min="12"
-                                    max="96">
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Process -->
-                <section class="panel">
-                    <div class="setting-group process-group sg-process">
-                        <div class="setting-group-header">
-                            <label class="label">Процесс работы</label>
-                            <label class="toggle-wrap"><input type="checkbox" id="processEnabledToggle"
-                                    class="module-toggle"> <span class="toggle-label">вкл</span></label>
-                        </div>
-                        <input type="text" id="processSectionTitleInput" class="input" placeholder="Заголовок секции">
-                        <div class="process-steps">
-                            <div class="process-step">
-                                <input type="text" id="processStep1TitleInput" class="input input-sm"
-                                    placeholder="Шаг 1 заголовок">
-                                <textarea id="processStep1TextInput" class="textarea textarea-sm" rows="2"
-                                    placeholder="Шаг 1 текст"></textarea>
-                            </div>
-                            <div class="process-step">
-                                <input type="text" id="processStep2TitleInput" class="input input-sm"
-                                    placeholder="Шаг 2 заголовок">
-                                <textarea id="processStep2TextInput" class="textarea textarea-sm" rows="2"
-                                    placeholder="Шаг 2 текст"></textarea>
-                            </div>
-                            <div class="process-step">
-                                <input type="text" id="processStep3TitleInput" class="input input-sm"
-                                    placeholder="Шаг 3 заголовок">
-                                <textarea id="processStep3TextInput" class="textarea textarea-sm" rows="2"
-                                    placeholder="Шаг 3 текст"></textarea>
-                            </div>
-                        </div>
-                        <div class="font-row">
-                            <label class="small-label">Шрифт</label>
-                            <select id="processFontSelect" class="select">
-                                <option value="'Helvetica Neue', Arial, sans-serif">Helvetica Neue</option>
-                                <option value="Georgia, serif">Georgia</option>
-                                <option value="'Segoe UI', sans-serif">Segoe UI</option>
-                            </select>
-                            <label class="small-label">Размер</label>
-                            <input type="number" id="processFontSizeInput" class="input input-num" value="18" min="10"
-                                max="32">
-                        </div>
-                        <div class="process-image-row">
-                            <label class="small-label">Изображение</label>
-                            <label class="btn btn-outline btn-xs">
-                                Выбрать
-                                <input type="file" id="processImageInput" accept="image/*" class="sr-only">
-                            </label>
-                            <span id="processImageName" class="hint"></span>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Icons -->
-                <section class="panel">
-                    <div class="setting-group icons-group">
-                        <div class="setting-group-header">
-                            <label class="label">Иконки</label>
-                            <label class="toggle-wrap"><input type="checkbox" id="iconsEnabledToggle" checked
-                                    class="module-toggle"> <span class="toggle-label">вкл</span></label>
-                        </div>
-                        <div class="icon-options">
-                            <label class="small-label">Набор</label>
-                            <select id="iconThemeSelect" class="select">
-                                <option value="png_black">PNG_BLACK</option>
-                                <option value="svg_black">SVG_BLACK</option>
-                                <option value="svg_white">SVG_WHITE</option>
-                            </select>
-                            <label class="small-label">Рандом</label>
-                            <select id="iconRandomizeSelect" class="select">
-                                <option value="position">По расположению</option>
-                                <option value="filename">По имени</option>
-                            </select>
-                            <button type="button" class="btn btn-outline btn-xs" id="loadIconsBtn">Загрузить
-                                иконки</button>
-                        </div>
+                    <div class="panel-content" style="display:block;">
+                        <!-- Dynamic height, no scroll container, fit all -->
+                        <div class="cards-list" id="cardsList"></div>
                     </div>
                 </section>
             </aside>
 
-            <section class="preview-section">
+            <!-- CENTER PREVIEW -->
+            <section class="preview-area">
                 <div class="canvas-container" id="canvasContainer">
                     <canvas id="previewCanvas"></canvas>
                 </div>
             </section>
+
+            <!-- RIGHT SIDEBAR -->
+            <aside class="sidebar-right">
+                <!-- Layout Settings -->
+                <section class="panel settings-panel">
+                    <h3 class="panel-title visually-hidden">Настройки макета</h3>
+
+                    <!-- Aspect & Frame -->
+                    <div class="setting-group collapsible-group expanded">
+                        <div class="group-header toggle-header"><span class="toggle-icon">-</span> Макет и Рамка</div>
+                        <div class="group-content" style="display:block;">
+                            <!-- Aspect ratio -->
+                            <div class="control-row">
+                                <label class="small-label">Пропорция</label>
+                                <div class="radio-group radio-group-pills">
+                                    <label class="pill-label"><input type="radio" name="aspect" value="1"
+                                            checked><span>1:1</span></label>
+                                    <label class="pill-label"><input type="radio" name="aspect"
+                                            value="0.75"><span>3:4</span></label>
+                                </div>
+                            </div>
+                            <!-- Frame -->
+                            <div class="control-row">
+                                <label class="small-label">Рамка</label>
+                                <div class="radio-group radio-group-pills">
+                                    <label class="pill-label"><input type="radio" name="frame" value="white"
+                                            checked><span>W</span></label>
+                                    <label class="pill-label"><input type="radio" name="frame"
+                                            value="black"><span>B</span></label>
+                                </div>
+                                <input type="number" id="frameSizeInput" class="input input-num" value="2" min="0"
+                                    max="20" step="1" title="Размер рамки">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Standard Layout Controls -->
+                    <div class="setting-group sg-standard-controls collapsible-group expanded" id="stdControlsGroup">
+                        <div class="group-header toggle-header"><span class="toggle-icon">-</span> Сетка (Standard)
+                        </div>
+                        <div class="group-content" style="display:block;">
+                            <!-- Content Margin -->
+                            <div class="control-row">
+                                <label class="small-label">Поля</label>
+                                <input type="range" id="contentMarginRange" min="0" max="400" value="100"
+                                    class="range-sm">
+                                <span id="contentMarginValue" class="range-value">100</span>
+                            </div>
+
+                            <!-- Column Gap -->
+                            <div class="control-row">
+                                <label class="small-label">Gap</label>
+                                <input type="range" id="columnGapRange" min="0" max="200" value="40" class="range-sm">
+                                <span id="columnGapValue" class="range-value">40</span>
+                            </div>
+
+                            <!-- Vertical Align -->
+                            <div class="control-row">
+                                <label class="small-label">Align</label>
+                                <div class="radio-group radio-group-pills">
+                                    <label class="pill-label"><input type="radio" name="vertAlign"
+                                            value="top"><span>T</span></label>
+                                    <label class="pill-label"><input type="radio" name="vertAlign" value="center"
+                                            checked><span>C</span></label>
+                                    <label class="pill-label"><input type="radio" name="vertAlign"
+                                            value="bottom"><span>B</span></label>
+                                </div>
+                            </div>
+
+                            <!-- 3D Rotation for Standard -->
+                            <div class="control-row"
+                                style="margin-top:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+                                <div
+                                    style="display:flex; justify-content:space-between; width:100%; margin-bottom:5px;">
+                                    <span class="small-label" style="opacity:0.7">3D Rotation</span>
+                                    <button id="btnResetStdRotation" class="btn-xs btn-yellow"
+                                        title="Сбросить">⟲</button>
+                                </div>
+                            </div>
+                            <div class="control-row">
+                                <label class="small-label">3D X</label>
+                                <input type="range" id="stdRotXRange" min="-180" max="180" value="0" class="range-sm">
+                                <span id="stdRotXValue" class="range-value">0°</span>
+                            </div>
+                            <div class="control-row">
+                                <label class="small-label">3D Y</label>
+                                <input type="range" id="stdRotYRange" min="-180" max="180" value="0" class="range-sm">
+                                <span id="stdRotYValue" class="range-value">0°</span>
+                            </div>
+                            <div class="control-row">
+                                <label class="small-label">3D Z</label>
+                                <input type="range" id="stdRotZRange" min="-180" max="180" value="0" class="range-sm">
+                                <span id="stdRotZValue" class="range-value">0°</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pattern Controls (P17/P09) -->
+                    <div class="setting-group collapsible-group expanded" id="patternSettingsGroup"
+                        style="display:none;">
+                        <div class="group-header toggle-header"><span class="toggle-icon">-</span> Паттерн</div>
+                        <div class="group-content" style="display:block;">
+                            <div class="control-row">
+                                <button id="btnRandomizePattern" class="btn btn-primary btn-xs"
+                                    style="width:100%">Randomize Pattern 🎲</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ISO Settings -->
+                    <div class="setting-group sg-iso-settings collapsible-group expanded" id="isoSettingsGroup"
+                        style="display:none;">
+                        <div class="group-header toggle-header"><span class="toggle-icon">-</span> Настройки ISO</div>
+                        <div class="group-content" style="display:block;">
+                            <!-- Lens (Perspective) -->
+                            <div class="control-row">
+                                <label class="small-label">Объектив</label>
+                                <input type="range" id="isoLensRange" min="12" max="800" value="50" class="range-sm">
+                                <span id="isoLensValue" class="range-value">50mm</span>
+                            </div>
+
+                            <!-- Angle -->
+                            <div class="control-row">
+                                <label class="small-label">Угол</label>
+                                <input type="range" id="isoAngleRange" min="-45" max="45" value="0" class="range-sm">
+                                <span id="isoAngleValue" class="range-value">0°</span>
+                            </div>
+
+                            <!-- View Angle -->
+                            <div class="control-row">
+                                <label class="small-label">Наклон</label>
+                                <input type="range" id="isoViewAngleRange" min="10" max="80" value="30"
+                                    class="range-sm">
+                                <span id="isoViewAngleValue" class="range-value">30°</span>
+                            </div>
+
+                            <!-- Scale / Spacing -->
+                            <div class="control-row">
+                                <label class="small-label">Масштаб</label>
+                                <input type="range" id="isoScaleRange" min="20" max="200" value="100" class="range-sm">
+                                <span id="isoScaleValue" class="range-value">100%</span>
+                            </div>
+                            <div class="control-row">
+                                <label class="small-label">Отступ</label>
+                                <input type="range" id="isoSpacingRange" min="50" max="300" value="100"
+                                    class="range-sm">
+                                <span id="isoSpacingValue" class="range-value">100%</span>
+                            </div>
+
+                            <!-- Z-Interval (Depth Scale) -->
+                            <div class="control-row">
+                                <label class="small-label">Z-Dist</label>
+                                <input type="range" id="isoZIntervalRange" min="1" max="100" value="20"
+                                    class="range-sm">
+                                <span id="isoZIntervalValue" class="range-value">20</span>
+                            </div>
+
+                            <!-- Card Rotation -->
+                            <div style="margin-top:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+                                <div style="display:flex; justify-content:space-between;">
+                                    <label class="small-label">Вращение</label>
+                                    <button id="btnResetRotation" class="btn-xs btn-yellow" title="Сбросить">⟲</button>
+                                </div>
+                                <div class="control-row"><label class="small-label">X</label><input type="range"
+                                        id="isoRotXRange" min="-180" max="180" value="0" class="range-sm"><span
+                                        id="isoRotXValue" class="range-value">0°</span></div>
+                                <div class="control-row"><label class="small-label">Y</label><input type="range"
+                                        id="isoRotYRange" min="-180" max="180" value="0" class="range-sm"><span
+                                        id="isoRotYValue" class="range-value">0°</span></div>
+                                <div class="control-row"><label class="small-label">Z</label><input type="range"
+                                        id="isoRotZRange" min="-180" max="180" value="0" class="range-sm"><span
+                                        id="isoRotZValue" class="range-value">0°</span></div>
+                            </div>
+
+                            <!-- DOF -->
+                            <div style="margin-top:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+                                <label class="small-label">DoF (Размытие)</label>
+                                <div class="control-row"><label class="small-label">Aperture</label><input type="range"
+                                        id="isoApertureRange" min="0" max="20" value="0" step="0.5"
+                                        class="range-sm"><span id="isoApertureValue" class="range-value">0</span></div>
+                                <div class="control-row"><label class="small-label">Focus</label><input type="range"
+                                        id="isoFocusPosRange" min="0" max="100" value="50" class="range-sm"><span
+                                        id="isoFocusPosValue" class="range-value">50%</span></div>
+                                <div class="control-row"><label class="small-label">Zone</label><input type="range"
+                                        id="isoFocusWidthRange" min="0" max="50" value="10" class="range-sm"><span
+                                        id="isoFocusWidthValue" class="range-value">10</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shadows -->
+                    <div class="setting-group collapsible-group expanded">
+                        <div class="group-header toggle-header"><span class="toggle-icon">-</span> Тени</div>
+                        <div class="group-content" style="display:block;">
+                            <div class="control-row">
+                                <label class="small-label">Сдвиг Y (V)</label>
+                                <input type="range" id="shadowDistRange" min="0" max="100" value="20" class="range-sm">
+                                <span id="shadowDistValue" class="range-value">20</span>
+                            </div>
+                            <div class="control-row">
+                                <label class="small-label">Сдвиг X (H)</label>
+                                <input type="range" id="shadowDistXRange" min="-100" max="100" value="0"
+                                    class="range-sm">
+                                <span id="shadowDistXValue" class="range-value">0</span>
+                            </div>
+                            <div class="control-row">
+                                <label class="small-label">Размытие</label>
+                                <input type="range" id="shadowBlurRange" min="0" max="100" value="40" class="range-sm">
+                                <span id="shadowBlurValue" class="range-value">40</span>
+                            </div>
+                            <div class="control-row">
+                                <label class="small-label">Опасити</label>
+                                <input type="range" id="shadowOpacityRange" min="0" max="100" value="40"
+                                    class="range-sm">
+                                <span id="shadowOpacityValue" class="range-value">40%</span>
+                            </div>
+
+                            <!-- Shadow Presets -->
+                            <div class="control-row"
+                                style="margin-top:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+                                <div
+                                    style="display:flex; justify-content:space-between; width:100%; margin-bottom:5px;">
+                                    <span class="small-label" style="opacity:0.7">Пресеты</span>
+                                    <div style="display:flex; gap:5px;">
+                                        <button id="btnAddShadowPreset" class="btn-xs btn-outline"
+                                            title="Добавить текущую тень">+</button>
+                                        <button id="btnResetShadows" class="btn-xs btn-yellow"
+                                            title="Сбросить">⟲</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="shadowPresetsList" class="preset-list"
+                                style="max-height:none; background:transparent; padding:0; gap:5px; flex-wrap:wrap; display:flex;">
+                                <!-- Presets injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Background -->
+                    <div class="setting-group collapsible-group expanded">
+                        <div class="group-header toggle-header"><span class="toggle-icon">-</span> Фон</div>
+                        <div class="group-content" style="display:block;">
+                            <div class="bg-controls">
+                                <div class="radio-group radio-group-pills">
+                                    <label class="pill-label"><input type="radio" name="bg" value="random"
+                                            checked><span>Rand</span></label>
+                                    <button type="button" class="btn btn-outline btn-xs" id="customBgBtn">Свой</button>
+                                </div>
+                                <select id="bgHistorySelect" class="select select-sm">
+                                    <option value="">История</option>
+                                </select>
+                                <button type="button" class="btn btn-ghost btn-xs" id="bgRandomizeBtn"
+                                    title="Рандом">🎲</button>
+                                <input type="file" id="bgInput" accept="image/*" class="sr-only">
+                                <div class="bg-drop-zone" id="bgDropZone"><span class="drop-text">Drop BG Here</span>
+                                </div>
+                            </div>
+                            <!-- ISO BG controls if needed, can share or be separate. keeping simple for now -->
+                            <div id="isoBgControls"
+                                style="display:none; margin-top:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:5px;">
+                                <label class="small-label">ISO Фон</label>
+                                <button type="button" class="btn btn-outline btn-xs" id="isoBgBtn"
+                                    style="width:100%; margin-bottom:5px;">Загрузить фото</button>
+                                <div class="control-row">
+                                    <label class="small-label">Blur</label>
+                                    <input type="range" id="isoBgBlurRange" min="0" max="40" value="20"
+                                        class="range-sm">
+                                    <span id="isoBgBlurValue" class="range-value">20</span>
+                                </div>
+                                <input type="file" id="isoBgInput" accept="image/*" class="sr-only">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Icons -->
+                    <div class="setting-group collapsible-group">
+                        <div class="group-header toggle-header"><span class="toggle-icon">+</span> Иконки</div>
+                        <div class="group-content">
+                            <label class="toggle-wrap"><input type="checkbox" id="iconsEnabledToggle" checked
+                                    class="module-toggle"> <span class="toggle-label">вкл</span></label>
+                            <div class="icon-options mt-2">
+                                <select id="iconThemeSelect" class="select">
+                                    <option value="png_black">PNG_BLACK</option>
+                                    <option value="svg_black">SVG_BLACK</option>
+                                    <option value="svg_white">SVG_WHITE</option>
+                                </select>
+                                <div class="row-center mt-2"><button type="button" class="btn btn-sm btn-outline"
+                                        id="iconRandomPlaceBtn">Pos</button><button type="button"
+                                        class="btn btn-sm btn-outline" id="iconRandomItemBtn">Item</button></div>
+                                <div class="mt-2"><label class="small-label">Опасити <span
+                                            id="iconOpacityValue">30%</span></label><input type="range"
+                                        id="iconOpacityRange" min="0" max="100" value="30" class="range-sm"></div>
+                                <button type="button" class="btn btn-outline btn-xs mt-2"
+                                    id="loadIconsBtn">Load</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+            </aside>
         </main>
     </div>
 
